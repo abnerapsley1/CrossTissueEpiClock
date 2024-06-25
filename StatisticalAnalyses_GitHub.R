@@ -56,7 +56,7 @@ data_pheno_TRN <- read.csv("TL_Study_Data_2.28.2020.csv")
 # CHS Phenotypes #
 data_pheno_CHS  <- read.csv("CHS_Phenotypes.csv")
 # Manual Clock Computation Results #
-data_mcc <- read.csv("ManualClockComputationData.csv")[,-c(1,3:5)]
+data_mcc <- read.csv("ManualClockComputationData_v3.csv")[,-c(1,3:5)]
 
 
 ### Clean up Data ### ----
@@ -258,6 +258,7 @@ ControlProbes_all <- cbind(ControlProbes_Batch1,
                            ControlProbes_Batch2,
                            ControlProbes_Batch3,
                            ControlProbes_Batch4)
+colnames(ControlProbes_all)[282] <- "2029215"
 # Remove bad samples #
 ControlProbes_all <- t(ControlProbes_all[,!(colnames(ControlProbes_all) %in% removeSamples)])
 # Perform PCA #
@@ -271,41 +272,6 @@ data <- merge(data, PC_ControlProbes[,1:31])
 
 ## Add Batch and Cell Composition Residualized Clocks ##
 ## Buccal (K=3) ##
-#Bval_b1 <- readRDS("bVals_SampFilter_BMIQNorm_Batch1.RDS")
-#Bval_b1 <- as.data.frame(Bval_b1)
-#Bval_b1 <- tibble::rownames_to_column(Bval_b1, "ProbeID")
-#Bval_b2 <- readRDS("bVals_SampFilter_BMIQNorm_Batch2.RDS")
-#Bval_b2 <- as.data.frame(Bval_b2)
-#Bval_b2 <- tibble::rownames_to_column(Bval_b2, "ProbeID")
-#Bval_b3 <- readRDS("bVals_SampFilter_BMIQNorm_Batch3.RDS")
-#Bval_b3 <- as.data.frame(Bval_b3)
-#Bval_b3 <- tibble::rownames_to_column(Bval_b3, "ProbeID")
-#Bval_b4 <- readRDS("bVals_SampFilter_BMIQNorm_Batch4.RDS")
-#Bval_b4 <- as.data.frame(Bval_b4)
-#Bval_b4 <- tibble::rownames_to_column(Bval_b4, "ProbeID")
-# Combine all matrices #
-#Bval_b1b2 <- merge(Bval_b1, Bval_b2, by = "ProbeID")
-#Bval_b1b2b3 <- merge(Bval_b1b2, Bval_b3, by = "ProbeID")
-#Bval <- merge(Bval_b1b2b3, Bval_b4, by = "ProbeID")
-#Bval_b1 <- NULL
-#Bval_b2 <- NULL
-#Bval_b3 <- NULL
-#Bval_b4 <- NULL
-#Bval_b1b2 <- NULL
-#Bval_b1b2b3 <- NULL
-# Split Bval by tissue type for Buccal cells #
-#keep <- colnames(Bval) %in% dplyr::filter(data, data$Tissue == "Buccal")$SampleID
-#keep[1] <- TRUE
-#Bval_Buccal <- Bval[,keep]
-# Estimate cell proportions with reference-free method #
-#RefFree_Deconvolution <- myRefFreeCellMix(as.matrix(Bval_Buccal[,-1]), K = 3)
-#estProp_RF <- RefFree_Deconvolution$Omega
-# Move row names to first column #
-#estProp_RF <- tibble::rownames_to_column(as.data.frame(estProp_RF), "SampleID")
-# Rename columns #
-#colnames(estProp_RF) <- c("SampleID", "RF_Cell1_Buccal", "RF_Cell2_Buccal", "RF_Cell3_Buccal")
-# Write estimated cell proportions #
-#write.csv(estProp_RF, "ReffFree_CellProp_Estimations_Buccal_K3.csv")
 # Read in previously estimated cell props #
 estProp_RF <- read.csv("ReffFree_CellProp_Estimations_Buccal_K3.csv")[,-1]
 # Merge with all data #
@@ -361,41 +327,6 @@ data$DNAmTLAdjAge_BatchCell_Res <- data_temp$DNAmTLAdjAge
 
 ## Add Batch and Cell Composition Residualized Clocks ##
 ## Saliva (K=5) ##
-#Bval_b1 <- readRDS("bVals_SampFilter_BMIQNorm_Batch1.RDS")
-#Bval_b1 <- as.data.frame(Bval_b1)
-#Bval_b1 <- tibble::rownames_to_column(Bval_b1, "ProbeID")
-#Bval_b2 <- readRDS("bVals_SampFilter_BMIQNorm_Batch2.RDS")
-#Bval_b2 <- as.data.frame(Bval_b2)
-#Bval_b2 <- tibble::rownames_to_column(Bval_b2, "ProbeID")
-#Bval_b3 <- readRDS("bVals_SampFilter_BMIQNorm_Batch3.RDS")
-#Bval_b3 <- as.data.frame(Bval_b3)
-#Bval_b3 <- tibble::rownames_to_column(Bval_b3, "ProbeID")
-#Bval_b4 <- readRDS("bVals_SampFilter_BMIQNorm_Batch4.RDS")
-#Bval_b4 <- as.data.frame(Bval_b4)
-#Bval_b4 <- tibble::rownames_to_column(Bval_b4, "ProbeID")
-# Combine all matrices #
-#Bval_b1b2 <- merge(Bval_b1, Bval_b2, by = "ProbeID")
-#Bval_b1b2b3 <- merge(Bval_b1b2, Bval_b3, by = "ProbeID")
-#Bval <- merge(Bval_b1b2b3, Bval_b4, by = "ProbeID")
-#Bval_b1 <- NULL
-#Bval_b2 <- NULL
-#Bval_b3 <- NULL
-#Bval_b4 <- NULL
-#Bval_b1b2 <- NULL
-#Bval_b1b2b3 <- NULL
-# Split Bval by tissue type for Saliva cells #
-#keep <- colnames(Bval) %in% dplyr::filter(data, data$Tissue == "Saliva")$SampleID
-#keep[1] <- TRUE
-#Bval_Saliva <- Bval[,keep]
-# Estimate cell proportions with reference-free method #
-#RefFree_Deconvolution <- myRefFreeCellMix(as.matrix(Bval_Saliva[,-1]), K = 5)
-#estProp_RF <- RefFree_Deconvolution$Omega
-# Move row names to first column #
-#estProp_RF <- tibble::rownames_to_column(as.data.frame(estProp_RF), "SampleID")
-# Rename columns #
-#colnames(estProp_RF) <- c("SampleID", "RF_Cell1_Saliva", "RF_Cell2_Saliva", "RF_Cell3_Saliva", "RF_Cell4_Saliva", "RF_Cell5_Saliva")
-# Write estimated cell proportions #
-#write.csv(estProp_RF, "ReffFree_CellProp_Estimations_Saliva_K5.csv")
 # Read in previously estimated cell props #
 estProp_RF <- read.csv("ReffFree_CellProp_Estimations_Saliva_K5.csv")[,-1]
 # Merge with all data #
@@ -650,7 +581,6 @@ for (i in 1:nrow(data)){
 ## Add Batch and Cell Composition Residualized Clocks ##
 ## PBMC (DNAm Clock Foundation Cell Compositions) ##
 # Horvath #
-# Horvath #
 data_temp <- umx_residualize("mcc_Horvath1", covs = c("PC1","PC2","PC3","PC4","PC5","PC6","PC7","PC8","PC9","PC10","PC11","PC12","PC13","PC14","PC15","PC16","PC17","PC18","PC19","PC20","PC21","PC22","PC23","PC24","PC25","PC26","PC27","PC28","PC29","PC30","CD8T","CD4T","NK","Bcell","Mono"), data = data)
 for (i in 1:nrow(data)){
   if (data$Tissue[i] == "PBMC") {data$mcc_Horvath1_BatchCell_Res[i] <- data_temp$mcc_Horvath1[i]}
@@ -825,186 +755,6 @@ data_plot$Tissue[data_plot$Tissue == "PBMC"] <- c("PBMC\n(adult only)")
 data$Tissue <- factor(data$Tissue, levels=c('Buccal', 'Saliva', 'DBS', 'Buffy Coat', 'PBMC'))
 data_plot$Tissue <- factor(data_plot$Tissue, levels=c('Buccal', 'Saliva', 'DBS', 'Buffy Coat\n(children only)', 'PBMC\n(adult only)'))
 
-
-
-
-
-### Testing Clock Foundation vs. Manual Calculation of Clocks ### ----
-## Actual Age Estimates ##
-# Horvath Pan-Tissue Clock #
-cor(data$DNAmAge, data$mcc_Horvath1)
-t.test(data$DNAmAge, data$mcc_Horvath1, paired = TRUE)
-plot(data$DNAmAge, data$mcc_Horvath1, 
-     xlab = "Clock Foundation", ylab = "Manual Computations",
-     main = "Horvath Pan-Tissue Age")
-abline(0,1)
-# Hannum Clock #
-cor(data$DNAmAgeHannum, data$mcc_Hannum)
-t.test(data$DNAmAgeHannum, data$mcc_Hannum, paired = TRUE)
-plot(data$DNAmAgeHannum, data$mcc_Hannum,
-     xlab = "Clock Foundation", ylab = "Manual Computations",
-     main = "Hannum Age")
-abline(0,1)
-# PhenoAge #
-cor(data$DNAmPhenoAge, data$mcc_PhenoAge)
-t.test(data$DNAmPhenoAge, data$mcc_PhenoAge, paired = TRUE)
-plot(data$DNAmPhenoAge, data$mcc_PhenoAge,
-     xlab = "Clock Foundation", ylab = "Manual Computations",
-     main = "PhenoAge")
-abline(0,1)
-# GrimAge2 #
-cor(data$mcc_GrimAge2, data$mcc_GrimAge2)
-t.test(data$mcc_GrimAge2, data$mcc_GrimAge2, paired = TRUE)
-plot(data$mcc_GrimAge2, data$mcc_GrimAge2,
-     xlab = "Clock Foundation", ylab = "Manual Computations",
-     main = "GrimAge2")
-abline(0,1)
-# Horvath2 #
-cor(data$DNAmAgeSkinBloodClock, data$mcc_Horvath2)
-t.test(data$DNAmAgeSkinBloodClock, data$mcc_Horvath2, paired = TRUE)
-plot(data$DNAmAgeSkinBloodClock, data$mcc_Horvath2,
-     xlab = "Clock Foundation", ylab = "Manual Computations",
-     main = "Skin and Blood Age")
-abline(0,1)
-# PedBE #
-cor(data$DNAmAgePedBE, data$mcc_PedBE)
-t.test(data$DNAmAgePedBE, data$mcc_PedBE, paired = TRUE)
-plot(data$DNAmAgePedBE, data$mcc_PedBE,
-     xlab = "Clock Foundation", ylab = "Manual Computations",
-     main = "PedBE Age")
-abline(0,1)
-
-## Acceleration Estimates (Difference Method) ##
-# Horvath Pan-Tissue Clock #
-cor(data$AgeAccelerationResidual, data$mcc_Horvath1_AccMinus)
-t.test(data$AgeAccelerationResidual, data$mcc_Horvath1_AccMinus, paired = TRUE)
-plot(data$AgeAccelerationResidual, data$mcc_Horvath1_AccMinus, 
-     xlab = "Clock Foundation", ylab = "Manual Computations",
-     main = "Horvath Pan-Tissue Age Accel. (Difference)")
-abline(0,1)
-# Hannum Clock #
-cor(data$AgeAccelerationResidualHannum, data$mcc_Hannum_AccMinus)
-t.test(data$AgeAccelerationResidualHannum, data$mcc_Hannum_AccMinus, paired = TRUE)
-plot(data$AgeAccelerationResidualHannum, data$mcc_Hannum_AccMinus,
-     xlab = "Clock Foundation", ylab = "Manual Computations",
-     main = "Hannum Accel. (Difference)")
-abline(0,1)
-# PhenoAge #
-cor(data$AgeAccelPheno, data$mcc_PhenoAge_AccMinus)
-t.test(data$AgeAccelPheno, data$mcc_PhenoAge_AccMinus, paired = TRUE)
-plot(data$AgeAccelPheno, data$mcc_PhenoAge_AccMinus,
-     xlab = "Clock Foundation", ylab = "Manual Computations",
-     main = "PhenoAge Accel. (Difference)")
-abline(0,1)
-# GrimAge2 #
-cor(data$AgeAccelGrim2, data$mcc_GrimAge2_AccMinus)
-t.test(data$AgeAccelGrim2, data$mcc_GrimAge2_AccMinus, paired = TRUE)
-plot(data$AgeAccelGrim2, data$mcc_GrimAge2_AccMinus,
-     xlab = "Clock Foundation", ylab = "Manual Computations",
-     main = "GrimAge2 Accel. (Difference)")
-abline(0,1)
-# Horvath2 #
-cor(data$AgeAccelerationResidual_SkinBloodClock, data$mcc_Horvath2_AccMinus)
-t.test(data$AgeAccelerationResidual_SkinBloodClock, data$mcc_Horvath2_AccMinus, paired = TRUE)
-plot(data$AgeAccelerationResidual_SkinBloodClock, data$mcc_Horvath2_AccMinus,
-     xlab = "Clock Foundation", ylab = "Manual Computations",
-     main = "Skin and Blood Accel. (Difference)")
-abline(0,1)
-# PedBE #
-cor(data$AgeAccelerationResidualPedBE, data$mcc_PedBE_AccMinus)
-t.test(data$AgeAccelerationResidualPedBE, data$mcc_PedBE_AccMinus, paired = TRUE)
-plot(data$AgeAccelerationResidualPedBE, data$mcc_PedBE_AccMinus,
-     xlab = "Clock Foundation", ylab = "Manual Computations",
-     main = "PedBE Accel. (Difference)")
-abline(0,1)
-
-## Acceleration Estimates (Tissue-Agnostic Intercept-Included Method) ##
-# Horvath Pan-Tissue Clock #
-cor(data$AgeAccelerationResidual, data$mcc_Horvath1_TissAg_Int)
-t.test(data$AgeAccelerationResidual, data$mcc_Horvath1_TissAg_Int, paired = TRUE)
-plot(data$AgeAccelerationResidual, data$mcc_Horvath1_TissAg_Int, 
-     xlab = "Clock Foundation", ylab = "Manual Computations",
-     main = "Horvath Pan-Tissue Age Accel. (TisAg-Int)")
-abline(0,1)
-# Hannum Clock #
-cor(data$AgeAccelerationResidualHannum, data$mcc_Hannum_TissAg_Int)
-t.test(data$AgeAccelerationResidualHannum, data$mcc_Hannum_TissAg_Int, paired = TRUE)
-plot(data$AgeAccelerationResidualHannum, data$mcc_Hannum_TissAg_Int,
-     xlab = "Clock Foundation", ylab = "Manual Computations",
-     main = "Hannum Accel. (TisAg-Int)")
-abline(0,1)
-# PhenoAge #
-cor(data$AgeAccelPheno, data$mcc_PhenoAge_TissAg_Int)
-t.test(data$AgeAccelPheno, data$mcc_PhenoAge_TissAg_Int, paired = TRUE)
-plot(data$AgeAccelPheno, data$mcc_PhenoAge_TissAg_Int,
-     xlab = "Clock Foundation", ylab = "Manual Computations",
-     main = "PhenoAge Accel. (TisAg-Int)")
-abline(0,1)
-# GrimAge2 #
-cor(data$AgeAccelGrim2, data$mcc_GrimAge2_TissAg_Int)
-t.test(data$AgeAccelGrim2, data$mcc_GrimAge2_TissAg_Int, paired = TRUE)
-plot(data$AgeAccelGrim2, data$mcc_GrimAge2_TissAg_Int,
-     xlab = "Clock Foundation", ylab = "Manual Computations",
-     main = "GrimAge2 Accel. (Difference)")
-abline(0,1)
-# Horvath2 #
-cor(data$AgeAccelerationResidual_SkinBloodClock, data$mcc_Horvath2_TissAg_Int)
-t.test(data$AgeAccelerationResidual_SkinBloodClock, data$mcc_Horvath2_TissAg_Int, paired = TRUE)
-plot(data$AgeAccelerationResidual_SkinBloodClock, data$mcc_Horvath2_TissAg_Int,
-     xlab = "Clock Foundation", ylab = "Manual Computations",
-     main = "Skin and Blood Accel. (Difference)")
-abline(0,1)
-# PedBE #
-cor(data$AgeAccelerationResidualPedBE, data$mcc_PedBE_TissAg_Int)
-t.test(data$AgeAccelerationResidualPedBE, data$mcc_PedBE_TissAg_Int, paired = TRUE)
-plot(data$AgeAccelerationResidualPedBE, data$mcc_PedBE_TissAg_Int,
-     xlab = "Clock Foundation", ylab = "Manual Computations",
-     main = "PedBE Accel. (Difference)")
-abline(0,1)
-
-## Acceleration Estimates (Tissue-Specific Intercept-Included Method) ##
-# Horvath Pan-Tissue Clock #
-cor(data$AgeAccelerationResidual, data$mcc_Horvath1_TissS_Int)
-t.test(data$AgeAccelerationResidual, data$mcc_Horvath1_TissS_Int, paired = TRUE)
-plot(data$AgeAccelerationResidual, data$mcc_Horvath1_TissS_Int, 
-     xlab = "Clock Foundation", ylab = "Manual Computations",
-     main = "Horvath Pan-Tissue Age Accel. (TisS-Int)")
-abline(0,1)
-# Hannum Clock #
-cor(data$AgeAccelerationResidualHannum, data$mccHannum_TissS_Int)
-t.test(data$AgeAccelerationResidualHannum, data$mccHannum_TissS_Int, paired = TRUE)
-plot(data$AgeAccelerationResidualHannum, data$mccHannum_TissS_Int,
-     xlab = "Clock Foundation", ylab = "Manual Computations",
-     main = "Hannum Accel. (TisS-Int)")
-abline(0,1)
-# PhenoAge #
-cor(data$AgeAccelPheno, data$mccPhenoAge_TissS_Int)
-t.test(data$AgeAccelPheno, data$mccPhenoAge_TissS_Int, paired = TRUE)
-plot(data$AgeAccelPheno, data$mccPhenoAge_TissS_Int,
-     xlab = "Clock Foundation", ylab = "Manual Computations",
-     main = "PhenoAge Accel. (TisS-Int)")
-abline(0,1)
-# GrimAge2 #
-cor(data$AgeAccelGrim2, data$mcc_GrimAge2_TissS_Int)
-t.test(data$AgeAccelGrim2, data$mcc_GrimAge2_TissS_Int, paired = TRUE)
-plot(data$AgeAccelGrim2, data$mcc_GrimAge2_TissS_Int,
-     xlab = "Clock Foundation", ylab = "Manual Computations",
-     main = "GrimAge2 Accel. (Difference)")
-abline(0,1)
-# Horvath2 #
-cor(data$AgeAccelerationResidual_SkinBloodClock, data$mcc_Horvath2_TissS_Int)
-t.test(data$AgeAccelerationResidual_SkinBloodClock, data$mcc_Horvath2_TissS_Int, paired = TRUE)
-plot(data$AgeAccelerationResidual_SkinBloodClock, data$mcc_Horvath2_TissS_Int,
-     xlab = "Clock Foundation", ylab = "Manual Computations",
-     main = "Skin and Blood Accel. (Difference)")
-abline(0,1)
-# PedBE #
-cor(data$AgeAccelerationResidualPedBE, data$mcc_PedBE_TissS_Int)
-t.test(data$AgeAccelerationResidualPedBE, data$mcc_PedBE_TissS_Int, paired = TRUE)
-plot(data$AgeAccelerationResidualPedBE, data$mcc_PedBE_TissS_Int,
-     xlab = "Clock Foundation", ylab = "Manual Computations",
-     main = "PedBE Accel. (Difference)")
-abline(0,1)
 
 ###############################################################
 ### Overall Descriptive Statistics ### ----
@@ -1663,63 +1413,6 @@ ggarrange(PhenoAge_CHS_RawAge, PhenoAge_CHS_AgeAccel,
           ncol = 2, nrow = 2, common.legend = TRUE, legend = "bottom",
           labels = c("A","B","D","E"))
 
-### Statistical Analyses - DunedinPoAm Raw ### ----
-## Descriptive Statistics - PoAm ##
-# Full cohort #
-describe(data_long$PoAm.Buccal)
-describe(data_long$PoAm.Saliva)
-describe(data_long$PoAm.DBS)
-describe(data_long$`PoAm.Buffy Coat`)
-describe(data_long$PoAm.PBMC)
-# TRN #
-describe(data_long$PoAm.Buccal[data_long$Study_Cohort.Buccal == "Telomere"])
-describe(data_long$PoAm.Saliva[data_long$Study_Cohort.Saliva == "Telomere"])
-describe(data_long$PoAm.DBS[data_long$Study_Cohort.DBS == "Telomere"])
-describe(data_long$PoAm.PBMC[data_long$Study_Cohort.PBMC == "Telomere"])
-# CHS #
-describe(data_long$PoAm.Buccal[data_long$Study_Cohort.Buccal == "CHS"])
-describe(data_long$PoAm.Saliva[data_long$Study_Cohort.Saliva == "CHS"])
-describe(data_long$PoAm.DBS[data_long$Study_Cohort.DBS == "CHS"])
-describe(data_long$`PoAm.Buffy Coat`[data_long$`Study_Cohort.Buffy Coat` == "CHS"])
-## Histograms ##
-# Histograms of PoAm stratified by tissue #
-ggplot(data, aes(x=PoAm, color=Tissue, fill=Tissue)) +
-  geom_histogram(position="identity", alpha=0.5)+
-  theme(legend.position="top", axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
-  facet_grid(Tissue ~ .) +
-  labs(x="PoAm Measurement", y="Count")
-## Violin Plots ##
-# Violin plot PoAm stratified by tissue #
-ggplot(data = data, aes(x = Tissue, y = PoAm)) +
-  geom_violin(aes(x = Tissue, y = PoAm), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PoAm, fill = Tissue),
-               width = 0.3, fatten = 3, alpha = 0.7,
-               position = position_dodge(width = 0.9, preserve = "total")) +
-  scale_fill_manual(values=c("red","blue","green4","purple","orange")) + 
-  scale_color_manual(values=c("red","blue","green4","purple","orange")) +
-  labs(y = "PoAm") + 
-  theme_bw()
-# Violin plot PoAm stratified by tissue and cohort #
-# TRN #
-ggplot(data = data[data$Study_Cohort == "Telomere",], aes(x = Tissue, y = PoAm)) +
-  geom_violin(aes(x = Tissue, y = PoAm), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PoAm, fill = Tissue),
-               width = 0.3, fatten = 3, alpha = 0.7,
-               position = position_dodge(width = 0.9, preserve = "total")) +
-  scale_fill_manual(values=c("red","blue","green4","orange")) + 
-  scale_color_manual(values=c("red","blue","green4","orange")) +
-  labs(y = "PoAm") + 
-  theme_bw()
-# CHS #
-ggplot(data = data[data$Study_Cohort == "CHS",], aes(x = Tissue, y = PoAm)) +
-  geom_violin(aes(x = Tissue, y = PoAm), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PoAm, fill = Tissue),
-               width = 0.3, fatten = 3, alpha = 0.7,
-               position = position_dodge(width = 0.9, preserve = "total")) +
-  scale_fill_manual(values=c("red","blue","green4","purple")) + 
-  scale_color_manual(values=c("red","blue","green4","purple")) +
-  labs(y = "PoAm") + 
-  theme_bw()
 ### Statistical Analyses - DunedinPACE Raw ### ----
 ## Descriptive Statistics - PACE ##
 # Full cohort #
@@ -1738,13 +1431,6 @@ describe(data_long$mcc_DunedinPACE.Buccal[data_long$Study_Cohort.Buccal == "CHS"
 describe(data_long$mcc_DunedinPACE.Saliva[data_long$Study_Cohort.Saliva == "CHS"])
 describe(data_long$mcc_DunedinPACE.DBS[data_long$Study_Cohort.DBS == "CHS"])
 describe(data_long$`mcc_DunedinPACE.Buffy Coat`[data_long$`Study_Cohort.Buffy Coat` == "CHS"])
-## Histograms ##
-# Histograms of PACE stratified by tissue #
-ggplot(data, aes(x=mcc_DunedinPACE, color=Tissue, fill=Tissue)) +
-  geom_histogram(position="identity", alpha=0.5)+
-  theme(legend.position="top", axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
-  facet_grid(Tissue ~ .) +
-  labs(x="PACE Measurement", y="Count")
 ## Violin Plots ##
 # Violin plot PACE stratified by tissue #
 ggplot(data = data_plot, aes(x = Tissue, y = mcc_DunedinPACE)) +
@@ -1782,171 +1468,46 @@ ggplot(data = data[data$Study_Cohort == "CHS",], aes(x = Tissue, y = mcc_Dunedin
   theme_bw() +
   theme(legend.position="bottom")
 
-### Statistical Analyses - DNAmTL Raw ### ----
-## Descriptive Statistics - DNAmTL ##
-# Full cohort #
-describe(data_long$DNAmTL.Buccal)
-describe(data_long$DNAmTL.Saliva)
-describe(data_long$DNAmTL.DBS)
-describe(data_long$`DNAmTL.Buffy Coat`)
-describe(data_long$DNAmTL.PBMC)
-# TRN #
-describe(data_long$DNAmTL.Buccal[data_long$Study_Cohort.Buccal == "Telomere"])
-describe(data_long$DNAmTL.Saliva[data_long$Study_Cohort.Saliva == "Telomere"])
-describe(data_long$DNAmTL.DBS[data_long$Study_Cohort.DBS == "Telomere"])
-describe(data_long$DNAmTL.PBMC[data_long$Study_Cohort.PBMC == "Telomere"])
-# CHS #
-describe(data_long$DNAmTL.Buccal[data_long$Study_Cohort.Buccal == "CHS"])
-describe(data_long$DNAmTL.Saliva[data_long$Study_Cohort.Saliva == "CHS"])
-describe(data_long$DNAmTL.DBS[data_long$Study_Cohort.DBS == "CHS"])
-describe(data_long$`DNAmTL.Buffy Coat`[data_long$`Study_Cohort.Buffy Coat` == "CHS"])
-## Descriptive Statistics - DNAmTL Age Adjusted ##
-# Full cohort #
-describe(data_long$DNAmTLAdjAge.Buccal)
-describe(data_long$DNAmTLAdjAge.Saliva)
-describe(data_long$DNAmTLAdjAge.DBS)
-describe(data_long$`DNAmTLAdjAge.Buffy Coat`)
-describe(data_long$DNAmTLAdjAge.PBMC)
-# TRN #
-describe(data_long$DNAmTLAdjAge.Buccal[data_long$Study_Cohort.Buccal == "Telomere"])
-describe(data_long$DNAmTLAdjAge.Saliva[data_long$Study_Cohort.Saliva == "Telomere"])
-describe(data_long$DNAmTLAdjAge.DBS[data_long$Study_Cohort.DBS == "Telomere"])
-describe(data_long$DNAmTLAdjAge.PBMC[data_long$Study_Cohort.PBMC == "Telomere"])
-# CHS #
-describe(data_long$DNAmTLAdjAge.Buccal[data_long$Study_Cohort.Buccal == "CHS"])
-describe(data_long$DNAmTLAdjAge.Saliva[data_long$Study_Cohort.Saliva == "CHS"])
-describe(data_long$DNAmTLAdjAge.DBS[data_long$Study_Cohort.DBS == "CHS"])
-describe(data_long$`DNAmTLAdjAge.Buffy Coat`[data_long$`Study_Cohort.Buffy Coat` == "CHS"])
-## Histograms ##
-# Histograms of DNAmTL stratified by tissue #
-ggplot(data, aes(x=DNAmTL, color=Tissue, fill=Tissue)) +
-  geom_histogram(position="identity", alpha=0.5)+
-  theme(legend.position="top", axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
-  facet_grid(Tissue ~ .) +
-  labs(x="DNAmTL", y="Count")
-# Histograms of DNAmTL Age Adjusted stratified by tissue #
-ggplot(data, aes(x=DNAmTLAdjAge, color=Tissue, fill=Tissue)) +
-  geom_histogram(position="identity", alpha=0.5)+
-  theme(legend.position="top", axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
-  facet_grid(Tissue ~ .) +
-  labs(x="DNAmTL Age-Adjusted", y="Count")
-## Violin Plots ##
-# Violin plot DNAmTL stratified by tissue #
-ggplot(data = data, aes(x = Tissue, y = DNAmTL)) +
-  geom_violin(aes(x = Tissue, y = DNAmTL), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = DNAmTL, fill = Tissue),
-               width = 0.3, fatten = 3, alpha = 0.7,
-               position = position_dodge(width = 0.9, preserve = "total")) +
-  scale_fill_manual(values=c("red","blue","green4","purple","orange")) + 
-  scale_color_manual(values=c("red","blue","green4","purple","orange")) +
-  labs(y = "DNAmTL (kb)") + 
-  theme_bw()
-# Violin plot DNAmTL stratified by tissue and cohort #
-# TRN #
-ggplot(data = data[data$Study_Cohort == "Telomere",], aes(x = Tissue, y = DNAmTL)) +
-  geom_violin(aes(x = Tissue, y = DNAmTL), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = DNAmTL, fill = Tissue),
-               width = 0.3, fatten = 3, alpha = 0.7,
-               position = position_dodge(width = 0.9, preserve = "total")) +
-  scale_fill_manual(values=c("red","blue","green4","orange")) + 
-  scale_color_manual(values=c("red","blue","green4","orange")) +
-  labs(y = "TRN DNAmTL") + 
-  theme_bw()
-# CHS #
-ggplot(data = data[data$Study_Cohort == "CHS",], aes(x = Tissue, y = DNAmTL)) +
-  geom_violin(aes(x = Tissue, y = DNAmTL), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = DNAmTL, fill = Tissue),
-               width = 0.3, fatten = 3, alpha = 0.7,
-               position = position_dodge(width = 0.9, preserve = "total")) +
-  scale_fill_manual(values=c("red","blue","green4","purple")) + 
-  scale_color_manual(values=c("red","blue","green4","purple")) +
-  labs(y = "CHS DNAmTL") + 
-  theme_bw()
-# Violin plot DNAmTL Age Adjusted stratified by tissue #
-ggplot(data = data, aes(x = Tissue, y = DNAmTLAdjAge)) +
-  geom_violin(aes(x = Tissue, y = DNAmTLAdjAge), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = DNAmTLAdjAge, fill = Tissue),
-               width = 0.3, fatten = 3, alpha = 0.7,
-               position = position_dodge(width = 0.9, preserve = "total")) +
-  scale_fill_manual(values=c("red","blue","green4","purple","orange")) + 
-  scale_color_manual(values=c("red","blue","green4","purple","orange")) +
-  labs(y = "DNAmTL Age Adjusted") + 
-  theme_bw()
-# Violin plot DNAmTL Age Adjusted stratified by tissue and cohort #
-# TRN #
-ggplot(data = data[data$Study_Cohort == "Telomere",], aes(x = Tissue, y = DNAmTLAdjAge)) +
-  geom_violin(aes(x = Tissue, y = DNAmTLAdjAge), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = DNAmTLAdjAge, fill = Tissue),
-               width = 0.3, fatten = 3, alpha = 0.7,
-               position = position_dodge(width = 0.9, preserve = "total")) +
-  scale_fill_manual(values=c("red","blue","green4","orange")) + 
-  scale_color_manual(values=c("red","blue","green4","orange")) +
-  labs(y = "TRN DNAmTL Age Adjusted") + 
-  theme_bw()
-# CHS #
-ggplot(data = data[data$Study_Cohort == "CHS",], aes(x = Tissue, y = DNAmTLAdjAge)) +
-  geom_violin(aes(x = Tissue, y = DNAmTLAdjAge), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = DNAmTLAdjAge, fill = Tissue),
-               width = 0.3, fatten = 3, alpha = 0.7,
-               position = position_dodge(width = 0.9, preserve = "total")) +
-  scale_fill_manual(values=c("red","blue","green4","purple")) + 
-  scale_color_manual(values=c("red","blue","green4","purple")) +
-  labs(y = "CHS DNAmTL Age Adjusted") + 
-  theme_bw()
-
 ### Statistical Analyses - PC Horvath Clock Raw ### ----
 ## Descriptive Statistics - Horvath Age ##
 # Full cohort #
-describe(data_long$PCHorvath1.Buccal)
-describe(data_long$PCHorvath1.Saliva)
-describe(data_long$PCHorvath1.DBS)
-describe(data_long$`PCHorvath1.Buffy Coat`)
-describe(data_long$PCHorvath1.PBMC)
+describe(data_long$mcc_PCHorvath1.Buccal)
+describe(data_long$mcc_PCHorvath1.Saliva)
+describe(data_long$mcc_PCHorvath1.DBS)
+describe(data_long$`mcc_PCHorvath1.Buffy Coat`)
+describe(data_long$mcc_PCHorvath1.PBMC)
 # TRN #
-describe(data_long$PCHorvath1.Buccal[data_long$Study_Cohort.Buccal == "Telomere"])
-describe(data_long$PCHorvath1.Saliva[data_long$Study_Cohort.Saliva == "Telomere"])
-describe(data_long$PCHorvath1.DBS[data_long$Study_Cohort.DBS == "Telomere"])
-describe(data_long$PCHorvath1.PBMC[data_long$Study_Cohort.PBMC == "Telomere"])
+describe(data_long$mcc_PCHorvath1.Buccal[data_long$Study_Cohort.Buccal == "Telomere"])
+describe(data_long$mcc_PCHorvath1.Saliva[data_long$Study_Cohort.Saliva == "Telomere"])
+describe(data_long$mcc_PCHorvath1.DBS[data_long$Study_Cohort.DBS == "Telomere"])
+describe(data_long$mcc_PCHorvath1.PBMC[data_long$Study_Cohort.PBMC == "Telomere"])
 # CHS #
-describe(data_long$PCHorvath1.Buccal[data_long$Study_Cohort.Buccal == "CHS"])
-describe(data_long$PCHorvath1.Saliva[data_long$Study_Cohort.Saliva == "CHS"])
-describe(data_long$PCHorvath1.DBS[data_long$Study_Cohort.DBS == "CHS"])
-describe(data_long$`PCHorvath1.Buffy Coat`[data_long$`Study_Cohort.Buffy Coat` == "CHS"])
+describe(data_long$mcc_PCHorvath1.Buccal[data_long$Study_Cohort.Buccal == "CHS"])
+describe(data_long$mcc_PCHorvath1.Saliva[data_long$Study_Cohort.Saliva == "CHS"])
+describe(data_long$mcc_PCHorvath1.DBS[data_long$Study_Cohort.DBS == "CHS"])
+describe(data_long$`mcc_PCHorvath1.Buffy Coat`[data_long$`Study_Cohort.Buffy Coat` == "CHS"])
 ## Descriptive Statistics - Horvath Acceleration ##
 # Full cohort #
-describe(data_long$PCHorvath1Resid.Buccal)
-describe(data_long$PCHorvath1Resid.Saliva)
-describe(data_long$PCHorvath1Resid.DBS)
-describe(data_long$`PCHorvath1Resid.Buffy Coat`)
-describe(data_long$PCHorvath1Resid.PBMC)
+describe(data_long$mcc_PCHorvath1_AccMinus.Buccal)
+describe(data_long$mcc_PCHorvath1_AccMinus.Saliva)
+describe(data_long$mcc_PCHorvath1_AccMinus.DBS)
+describe(data_long$`mcc_PCHorvath1_AccMinus.Buffy Coat`)
+describe(data_long$mcc_PCHorvath1_AccMinus.PBMC)
 # TRN #
-describe(data_long$PCHorvath1Resid.Buccal[data_long$Study_Cohort.Buccal == "Telomere"])
-describe(data_long$PCHorvath1Resid.Saliva[data_long$Study_Cohort.Saliva == "Telomere"])
-describe(data_long$PCHorvath1Resid.DBS[data_long$Study_Cohort.DBS == "Telomere"])
-describe(data_long$PCHorvath1Resid.PBMC[data_long$Study_Cohort.PBMC == "Telomere"])
+describe(data_long$mcc_PCHorvath1_AccMinus.Buccal[data_long$Study_Cohort.Buccal == "Telomere"])
+describe(data_long$mcc_PCHorvath1_AccMinus.Saliva[data_long$Study_Cohort.Saliva == "Telomere"])
+describe(data_long$mcc_PCHorvath1_AccMinus.DBS[data_long$Study_Cohort.DBS == "Telomere"])
+describe(data_long$mcc_PCHorvath1_AccMinus.PBMC[data_long$Study_Cohort.PBMC == "Telomere"])
 # CHS #
-describe(data_long$PCHorvath1Resid.Buccal[data_long$Study_Cohort.Buccal == "CHS"])
-describe(data_long$PCHorvath1Resid.Saliva[data_long$Study_Cohort.Saliva == "CHS"])
-describe(data_long$PCHorvath1Resid.DBS[data_long$Study_Cohort.DBS == "CHS"])
-describe(data_long$`PCHorvath1Resid.Buffy Coat`[data_long$`Study_Cohort.Buffy Coat` == "CHS"])
-## Histograms ##
-# Histograms of Horvath Age stratified by tissue #
-ggplot(data, aes(x=PCHorvath1, color=Tissue, fill=Tissue)) +
-  geom_histogram(position="identity", alpha=0.5)+
-  theme(legend.position="top", axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
-  facet_grid(Tissue ~ .) +
-  labs(x="Horvath Clock", y="Count")
-# Histograms of Horvath Age Accel stratified by tissue #
-ggplot(data, aes(x=PCHorvath1Resid, color=Tissue, fill=Tissue)) +
-  geom_histogram(position="identity", alpha=0.5)+
-  theme(legend.position="top", axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
-  facet_grid(Tissue ~ .) +
-  labs(x="Horvath Clock Accel", y="Count")
+describe(data_long$mcc_PCHorvath1_AccMinus.Buccal[data_long$Study_Cohort.Buccal == "CHS"])
+describe(data_long$mcc_PCHorvath1_AccMinus.Saliva[data_long$Study_Cohort.Saliva == "CHS"])
+describe(data_long$mcc_PCHorvath1_AccMinus.DBS[data_long$Study_Cohort.DBS == "CHS"])
+describe(data_long$`mcc_PCHorvath1_AccMinus.Buffy Coat`[data_long$`Study_Cohort.Buffy Coat` == "CHS"])
 ## Violin Plots ##
 # Violin plot Horvath Age stratified by tissue #
-HorvathPC_All_RawAge <- ggplot(data = data_plot, aes(x = Tissue, y = PCHorvath1)) +
-  geom_violin(aes(x = Tissue, y = PCHorvath1), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCHorvath1, fill = Tissue),
+HorvathPC_All_RawAge <- ggplot(data = data_plot, aes(x = Tissue, y = mcc_PCHorvath1)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCHorvath1), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCHorvath1, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   geom_vline(xintercept = 3.5, linetype = "dashed") +
@@ -1956,9 +1517,9 @@ HorvathPC_All_RawAge <- ggplot(data = data_plot, aes(x = Tissue, y = PCHorvath1)
   theme_bw()
 # Violin plot Horvath Age stratified by tissue and cohort #
 # TRN #
-HorvathPC_TRN_RawAge <- ggplot(data = data[data$Study_Cohort == "Telomere",], aes(x = Tissue, y = PCHorvath1)) +
-  geom_violin(aes(x = Tissue, y = PCHorvath1), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCHorvath1, fill = Tissue),
+HorvathPC_TRN_RawAge <- ggplot(data = data[data$Study_Cohort == "Telomere",], aes(x = Tissue, y = mcc_PCHorvath1)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCHorvath1), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCHorvath1, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   scale_fill_manual(values=c("red","blue","green4","orange")) + 
@@ -1966,9 +1527,9 @@ HorvathPC_TRN_RawAge <- ggplot(data = data[data$Study_Cohort == "Telomere",], ae
   labs(y = element_blank(), title = "PC Horvath Pan-Tissue Age (Adults Only)", x = element_blank()) + 
   theme_bw()
 # CHS #
-HorvathPC_CHS_RawAge <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x = Tissue, y = PCHorvath1)) +
-  geom_violin(aes(x = Tissue, y = PCHorvath1), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCHorvath1, fill = Tissue),
+HorvathPC_CHS_RawAge <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x = Tissue, y = mcc_PCHorvath1)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCHorvath1), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCHorvath1, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   scale_fill_manual(values=c("red","blue","green4","purple")) + 
@@ -1976,9 +1537,9 @@ HorvathPC_CHS_RawAge <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x =
   labs(y = element_blank(), title = "PC Horvath Pan-Tissue Age (Children Only)", x = element_blank()) + 
   theme_bw()
 # Violin plot Horvath Age Accel stratified by tissue #
-HorvathPC_All_AgeAccel <- ggplot(data = data_plot, aes(x = Tissue, y = PCHorvath1Resid)) +
-  geom_violin(aes(x = Tissue, y = PCHorvath1Resid), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCHorvath1Resid, fill = Tissue),
+HorvathPC_All_AgeAccel <- ggplot(data = data_plot, aes(x = Tissue, y = mcc_PCHorvath1_AccMinus)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCHorvath1_AccMinus), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCHorvath1_AccMinus, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   geom_vline(xintercept = 3.5, linetype = "dashed") +
@@ -1988,9 +1549,9 @@ HorvathPC_All_AgeAccel <- ggplot(data = data_plot, aes(x = Tissue, y = PCHorvath
   theme_bw()
 # Violin plot Horvath Age Acceleration stratified by tissue and cohort #
 # TRN #
-HorvathPC_TRN_AgeAccel <- ggplot(data = data[data$Study_Cohort == "Telomere",], aes(x = Tissue, y = PCHorvath1Resid)) +
-  geom_violin(aes(x = Tissue, y = PCHorvath1Resid), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCHorvath1Resid, fill = Tissue),
+HorvathPC_TRN_AgeAccel <- ggplot(data = data[data$Study_Cohort == "Telomere",], aes(x = Tissue, y = mcc_PCHorvath1_AccMinus)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCHorvath1_AccMinus), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCHorvath1_AccMinus, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   scale_fill_manual(values=c("red","blue","green4","orange")) + 
@@ -1998,9 +1559,9 @@ HorvathPC_TRN_AgeAccel <- ggplot(data = data[data$Study_Cohort == "Telomere",], 
   labs(y = element_blank(), title = "PC Horvath Pan-Tissue Age Acceleration (Adults Only)", x = element_blank()) + 
   theme_bw()
 # CHS #
-HorvathPC_CHS_AgeAccel <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x = Tissue, y = PCHorvath1Resid)) +
-  geom_violin(aes(x = Tissue, y = PCHorvath1Resid), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCHorvath1Resid, fill = Tissue),
+HorvathPC_CHS_AgeAccel <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x = Tissue, y = mcc_PCHorvath1_AccMinus)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCHorvath1_AccMinus), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCHorvath1_AccMinus, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   scale_fill_manual(values=c("red","blue","green4","purple")) + 
@@ -2012,56 +1573,43 @@ HorvathPC_CHS_AgeAccel <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x
 ### Statistical Analyses - PC Hannum Clock Raw ### ----
 ## Descriptive Statistics - Hannum Age ##
 # Full cohort #
-describe(data_long$PCHannum.Buccal)
-describe(data_long$PCHannum.Saliva)
-describe(data_long$PCHannum.DBS)
-describe(data_long$`PCHannum.Buffy Coat`)
-describe(data_long$PCHannum.PBMC)
+describe(data_long$mcc_PCHannum.Buccal)
+describe(data_long$mcc_PCHannum.Saliva)
+describe(data_long$mcc_PCHannum.DBS)
+describe(data_long$`mcc_PCHannum.Buffy Coat`)
+describe(data_long$mcc_PCHannum.PBMC)
 # TRN #
-describe(data_long$PCHannum.Buccal[data_long$Study_Cohort.Buccal == "Telomere"])
-describe(data_long$PCHannum.Saliva[data_long$Study_Cohort.Saliva == "Telomere"])
-describe(data_long$PCHannum.DBS[data_long$Study_Cohort.DBS == "Telomere"])
-describe(data_long$PCHannum.PBMC[data_long$Study_Cohort.PBMC == "Telomere"])
+describe(data_long$mcc_PCHannum.Buccal[data_long$Study_Cohort.Buccal == "Telomere"])
+describe(data_long$mcc_PCHannum.Saliva[data_long$Study_Cohort.Saliva == "Telomere"])
+describe(data_long$mcc_PCHannum.DBS[data_long$Study_Cohort.DBS == "Telomere"])
+describe(data_long$mcc_PCHannum.PBMC[data_long$Study_Cohort.PBMC == "Telomere"])
 # CHS #
-describe(data_long$PCHannum.Buccal[data_long$Study_Cohort.Buccal == "CHS"])
-describe(data_long$PCHannum.Saliva[data_long$Study_Cohort.Saliva == "CHS"])
-describe(data_long$PCHannum.DBS[data_long$Study_Cohort.DBS == "CHS"])
-describe(data_long$`PCHannum.Buffy Coat`[data_long$`Study_Cohort.Buffy Coat` == "CHS"])
+describe(data_long$mcc_PCHannum.Buccal[data_long$Study_Cohort.Buccal == "CHS"])
+describe(data_long$mcc_PCHannum.Saliva[data_long$Study_Cohort.Saliva == "CHS"])
+describe(data_long$mcc_PCHannum.DBS[data_long$Study_Cohort.DBS == "CHS"])
+describe(data_long$`mcc_PCHannum.Buffy Coat`[data_long$`Study_Cohort.Buffy Coat` == "CHS"])
 ## Descriptive Statistics - Hannum Acceleration ##
 # Full cohort #
-describe(data_long$PCHannumResid.Buccal)
-describe(data_long$PCHannumResid.Saliva)
-describe(data_long$PCHannumResid.DBS)
-describe(data_long$`PCHannumResid.Buffy Coat`)
-describe(data_long$PCHannumResid.PBMC)
+describe(data_long$mcc_PCHannum_AccMinus.Buccal)
+describe(data_long$mcc_PCHannum_AccMinus.Saliva)
+describe(data_long$mcc_PCHannum_AccMinus.DBS)
+describe(data_long$`mcc_PCHannum_AccMinus.Buffy Coat`)
+describe(data_long$mcc_PCHannum_AccMinus.PBMC)
 # TRN #
-describe(data_long$PCHannumResid.Buccal[data_long$Study_Cohort.Buccal == "Telomere"])
-describe(data_long$PCHannumResid.Saliva[data_long$Study_Cohort.Saliva == "Telomere"])
-describe(data_long$PCHannumResid.DBS[data_long$Study_Cohort.DBS == "Telomere"])
-describe(data_long$PCHannumResid.PBMC[data_long$Study_Cohort.PBMC == "Telomere"])
+describe(data_long$mcc_PCHannum_AccMinus.Buccal[data_long$Study_Cohort.Buccal == "Telomere"])
+describe(data_long$mcc_PCHannum_AccMinus.Saliva[data_long$Study_Cohort.Saliva == "Telomere"])
+describe(data_long$mcc_PCHannum_AccMinus.DBS[data_long$Study_Cohort.DBS == "Telomere"])
+describe(data_long$mcc_PCHannum_AccMinus.PBMC[data_long$Study_Cohort.PBMC == "Telomere"])
 # CHS #
-describe(data_long$PCHannumResid.Buccal[data_long$Study_Cohort.Buccal == "CHS"])
-describe(data_long$PCHannumResid.Saliva[data_long$Study_Cohort.Saliva == "CHS"])
-describe(data_long$PCHannumResid.DBS[data_long$Study_Cohort.DBS == "CHS"])
-describe(data_long$`PCHannumResid.Buffy Coat`[data_long$`Study_Cohort.Buffy Coat` == "CHS"])
-## Histograms ##
-# Histograms of Hannum Age stratified by tissue #
-ggplot(data, aes(x=PCHannum, color=Tissue, fill=Tissue)) +
-  geom_histogram(position="identity", alpha=0.5)+
-  theme(legend.position="top", axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
-  facet_grid(Tissue ~ .) +
-  labs(x="Hannum Clock", y="Count")
-# Histograms of Hannum Age Accel stratified by tissue #
-ggplot(data, aes(x=PCHannumResid, color=Tissue, fill=Tissue)) +
-  geom_histogram(position="identity", alpha=0.5)+
-  theme(legend.position="top", axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
-  facet_grid(Tissue ~ .) +
-  labs(x="Hannum Clock Accel", y="Count")
+describe(data_long$mcc_PCHannum_AccMinus.Buccal[data_long$Study_Cohort.Buccal == "CHS"])
+describe(data_long$mcc_PCHannum_AccMinus.Saliva[data_long$Study_Cohort.Saliva == "CHS"])
+describe(data_long$mcc_PCHannum_AccMinus.DBS[data_long$Study_Cohort.DBS == "CHS"])
+describe(data_long$`mcc_PCHannum_AccMinus.Buffy Coat`[data_long$`Study_Cohort.Buffy Coat` == "CHS"])
 ## Violin Plots ##
 # Violin plot Hannum Age stratified by tissue #
-HannumPC_All_RawAge <- ggplot(data = data_plot, aes(x = Tissue, y = PCHannum)) +
-  geom_violin(aes(x = Tissue, y = PCHannum), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCHannum, fill = Tissue),
+HannumPC_All_RawAge <- ggplot(data = data_plot, aes(x = Tissue, y = mcc_PCHannum)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCHannum), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCHannum, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   geom_vline(xintercept = 3.5, linetype = "dashed") +
@@ -2071,9 +1619,9 @@ HannumPC_All_RawAge <- ggplot(data = data_plot, aes(x = Tissue, y = PCHannum)) +
   theme_bw()
 # Violin plot Hannum Age stratified by tissue and cohort #
 # TRN #
-HannumPC_TRN_RawAge <- ggplot(data = data[data$Study_Cohort == "Telomere",], aes(x = Tissue, y = PCHannum)) +
-  geom_violin(aes(x = Tissue, y = PCHannum), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCHannum, fill = Tissue),
+HannumPC_TRN_RawAge <- ggplot(data = data[data$Study_Cohort == "Telomere",], aes(x = Tissue, y = mcc_PCHannum)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCHannum), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCHannum, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   scale_fill_manual(values=c("red","blue","green4","orange")) + 
@@ -2081,9 +1629,9 @@ HannumPC_TRN_RawAge <- ggplot(data = data[data$Study_Cohort == "Telomere",], aes
   labs(y = element_blank(), title = "PC Hannum Age (Adults Only)", x = element_blank()) + 
   theme_bw()
 # CHS #
-HannumPC_CHS_RawAge <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x = Tissue, y = PCHannum)) +
-  geom_violin(aes(x = Tissue, y = PCHannum), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCHannum, fill = Tissue),
+HannumPC_CHS_RawAge <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x = Tissue, y = mcc_PCHannum)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCHannum), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCHannum, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   scale_fill_manual(values=c("red","blue","green4","purple")) + 
@@ -2091,9 +1639,9 @@ HannumPC_CHS_RawAge <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x = 
   labs(y = element_blank(), title = "PC Hannum Age (Children Only)", x = element_blank()) + 
   theme_bw()
 # Violin plot Hannum Age Accel stratified by tissue #
-HannumPC_All_AgeAccel <- ggplot(data = data_plot, aes(x = Tissue, y = PCHannumResid)) +
-  geom_violin(aes(x = Tissue, y = PCHannumResid), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCHannumResid, fill = Tissue),
+HannumPC_All_AgeAccel <- ggplot(data = data_plot, aes(x = Tissue, y = mcc_PCHannum_AccMinus)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCHannum_AccMinus), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCHannum_AccMinus, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   geom_vline(xintercept = 3.5, linetype = "dashed") +
@@ -2103,9 +1651,9 @@ HannumPC_All_AgeAccel <- ggplot(data = data_plot, aes(x = Tissue, y = PCHannumRe
   theme_bw()
 # Violin plot Hannum Age Acceleration stratified by tissue and cohort #
 # TRN #
-HannumPC_TRN_AgeAccel <- ggplot(data = data[data$Study_Cohort == "Telomere",], aes(x = Tissue, y = PCHannumResid)) +
-  geom_violin(aes(x = Tissue, y = PCHannumResid), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCHannumResid, fill = Tissue),
+HannumPC_TRN_AgeAccel <- ggplot(data = data[data$Study_Cohort == "Telomere",], aes(x = Tissue, y = mcc_PCHannum_AccMinus)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCHannum_AccMinus), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCHannum_AccMinus, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   scale_fill_manual(values=c("red","blue","green4","orange")) + 
@@ -2113,9 +1661,9 @@ HannumPC_TRN_AgeAccel <- ggplot(data = data[data$Study_Cohort == "Telomere",], a
   labs(y = element_blank(), title = "PC Hannum Age Acceleration (Adults Only)", x = element_blank()) + 
   theme_bw()
 # CHS #
-HannumPC_CHS_AgeAccel <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x = Tissue, y = PCHannumResid)) +
-  geom_violin(aes(x = Tissue, y = PCHannumResid), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCHannumResid, fill = Tissue),
+HannumPC_CHS_AgeAccel <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x = Tissue, y = mcc_PCHannum_AccMinus)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCHannum_AccMinus), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCHannum_AccMinus, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   scale_fill_manual(values=c("red","blue","green4","purple")) + 
@@ -2144,56 +1692,43 @@ ggarrange(HorvathPC_CHS_RawAge, HorvathPC_CHS_AgeAccel,
 ### Statistical Analyses - PC PhenoAge Raw ### ----
 ## Descriptive Statistics - PhenoAge ##
 # Full cohort #
-describe(data_long$PCPhenoAge.Buccal)
-describe(data_long$PCPhenoAge.Saliva)
-describe(data_long$PCPhenoAge.DBS)
-describe(data_long$`PCPhenoAge.Buffy Coat`)
-describe(data_long$PCPhenoAge.PBMC)
+describe(data_long$mcc_PCPhenoAge.Buccal)
+describe(data_long$mcc_PCPhenoAge.Saliva)
+describe(data_long$mcc_PCPhenoAge.DBS)
+describe(data_long$`mcc_PCPhenoAge.Buffy Coat`)
+describe(data_long$mcc_PCPhenoAge.PBMC)
 # TRN #
-describe(data_long$PCPhenoAge.Buccal[data_long$Study_Cohort.Buccal == "Telomere"])
-describe(data_long$PCPhenoAge.Saliva[data_long$Study_Cohort.Saliva == "Telomere"])
-describe(data_long$PCPhenoAge.DBS[data_long$Study_Cohort.DBS == "Telomere"])
-describe(data_long$PCPhenoAge.PBMC[data_long$Study_Cohort.PBMC == "Telomere"])
+describe(data_long$mcc_PCPhenoAge.Buccal[data_long$Study_Cohort.Buccal == "Telomere"])
+describe(data_long$mcc_PCPhenoAge.Saliva[data_long$Study_Cohort.Saliva == "Telomere"])
+describe(data_long$mcc_PCPhenoAge.DBS[data_long$Study_Cohort.DBS == "Telomere"])
+describe(data_long$mcc_PCPhenoAge.PBMC[data_long$Study_Cohort.PBMC == "Telomere"])
 # CHS #
-describe(data_long$PCPhenoAge.Buccal[data_long$Study_Cohort.Buccal == "CHS"])
-describe(data_long$PCPhenoAge.Saliva[data_long$Study_Cohort.Saliva == "CHS"])
-describe(data_long$PCPhenoAge.DBS[data_long$Study_Cohort.DBS == "CHS"])
-describe(data_long$`PCPhenoAge.Buffy Coat`[data_long$`Study_Cohort.Buffy Coat` == "CHS"])
+describe(data_long$mcc_PCPhenoAge.Buccal[data_long$Study_Cohort.Buccal == "CHS"])
+describe(data_long$mcc_PCPhenoAge.Saliva[data_long$Study_Cohort.Saliva == "CHS"])
+describe(data_long$mcc_PCPhenoAge.DBS[data_long$Study_Cohort.DBS == "CHS"])
+describe(data_long$`mcc_PCPhenoAge.Buffy Coat`[data_long$`Study_Cohort.Buffy Coat` == "CHS"])
 ## Descriptive Statistics - PhenoAge Acceleration ##
 # Full cohort #
-describe(data_long$PCPhenoAgeResid.Buccal)
-describe(data_long$PCPhenoAgeResid.Saliva)
-describe(data_long$PCPhenoAgeResid.DBS)
-describe(data_long$`PCPhenoAgeResid.Buffy Coat`)
-describe(data_long$PCPhenoAgeResid.PBMC)
+describe(data_long$mcc_PCPhenoAge_AccMinus.Buccal)
+describe(data_long$mcc_PCPhenoAge_AccMinus.Saliva)
+describe(data_long$mcc_PCPhenoAge_AccMinus.DBS)
+describe(data_long$`mcc_PCPhenoAge_AccMinus.Buffy Coat`)
+describe(data_long$mcc_PCPhenoAge_AccMinus.PBMC)
 # TRN #
-describe(data_long$PCPhenoAgeResid.Buccal[data_long$Study_Cohort.Buccal == "Telomere"])
-describe(data_long$PCPhenoAgeResid.Saliva[data_long$Study_Cohort.Saliva == "Telomere"])
-describe(data_long$PCPhenoAgeResid.DBS[data_long$Study_Cohort.DBS == "Telomere"])
-describe(data_long$PCPhenoAgeResid.PBMC[data_long$Study_Cohort.PBMC == "Telomere"])
+describe(data_long$mcc_PCPhenoAge_AccMinus.Buccal[data_long$Study_Cohort.Buccal == "Telomere"])
+describe(data_long$mcc_PCPhenoAge_AccMinus.Saliva[data_long$Study_Cohort.Saliva == "Telomere"])
+describe(data_long$mcc_PCPhenoAge_AccMinus.DBS[data_long$Study_Cohort.DBS == "Telomere"])
+describe(data_long$mcc_PCPhenoAge_AccMinus.PBMC[data_long$Study_Cohort.PBMC == "Telomere"])
 # CHS #
-describe(data_long$PCPhenoAgeResid.Buccal[data_long$Study_Cohort.Buccal == "CHS"])
-describe(data_long$PCPhenoAgeResid.Saliva[data_long$Study_Cohort.Saliva == "CHS"])
-describe(data_long$PCPhenoAgeResid.DBS[data_long$Study_Cohort.DBS == "CHS"])
-describe(data_long$`PCPhenoAgeResid.Buffy Coat`[data_long$`Study_Cohort.Buffy Coat` == "CHS"])
-## Histograms ##
-# Histograms of PhenoAge stratified by tissue #
-ggplot(data, aes(x=PCPhenoAge, color=Tissue, fill=Tissue)) +
-  geom_histogram(position="identity", alpha=0.5)+
-  theme(legend.position="top", axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
-  facet_grid(Tissue ~ .) +
-  labs(x="PhenoAge", y="Count")
-# Histograms of PhenoAge Accel stratified by tissue #
-ggplot(data, aes(x=PCPhenoAgeResid, color=Tissue, fill=Tissue)) +
-  geom_histogram(position="identity", alpha=0.5)+
-  theme(legend.position="top", axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
-  facet_grid(Tissue ~ .) +
-  labs(x="PhenoAge Accel", y="Count")
+describe(data_long$mcc_PCPhenoAge_AccMinus.Buccal[data_long$Study_Cohort.Buccal == "CHS"])
+describe(data_long$mcc_PCPhenoAge_AccMinus.Saliva[data_long$Study_Cohort.Saliva == "CHS"])
+describe(data_long$mcc_PCPhenoAge_AccMinus.DBS[data_long$Study_Cohort.DBS == "CHS"])
+describe(data_long$`mcc_PCPhenoAge_AccMinus.Buffy Coat`[data_long$`Study_Cohort.Buffy Coat` == "CHS"])
 ## Violin Plots ##
 # Violin plot PhenoAge stratified by tissue #
-PhenoAgePC_All_RawAge <- ggplot(data = data_plot, aes(x = Tissue, y = PCPhenoAge)) +
-  geom_violin(aes(x = Tissue, y = PCPhenoAge), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCPhenoAge, fill = Tissue),
+PhenoAgePC_All_RawAge <- ggplot(data = data_plot, aes(x = Tissue, y = mcc_PCPhenoAge)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCPhenoAge), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCPhenoAge, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   geom_vline(xintercept = 3.5, linetype = "dashed") +
@@ -2203,9 +1738,9 @@ PhenoAgePC_All_RawAge <- ggplot(data = data_plot, aes(x = Tissue, y = PCPhenoAge
   theme_bw()
 # Violin plot PhenoAge stratified by tissue and cohort #
 # TRN #
-PhenoAgePC_TRN_RawAge <- ggplot(data = data[data$Study_Cohort == "Telomere",], aes(x = Tissue, y = PCPhenoAge)) +
-  geom_violin(aes(x = Tissue, y = PCPhenoAge), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCPhenoAge, fill = Tissue),
+PhenoAgePC_TRN_RawAge <- ggplot(data = data[data$Study_Cohort == "Telomere",], aes(x = Tissue, y = mcc_PCPhenoAge)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCPhenoAge), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCPhenoAge, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   scale_fill_manual(values=c("red","blue","green4","orange")) + 
@@ -2213,9 +1748,9 @@ PhenoAgePC_TRN_RawAge <- ggplot(data = data[data$Study_Cohort == "Telomere",], a
   labs(y = element_blank(), title = "PC PhenoAge (Adults Only)", x = element_blank()) + 
   theme_bw()
 # CHS #
-PhenoAgePC_CHS_RawAge <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x = Tissue, y = PCPhenoAge)) +
-  geom_violin(aes(x = Tissue, y = PCPhenoAge), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCPhenoAge, fill = Tissue),
+PhenoAgePC_CHS_RawAge <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x = Tissue, y = mcc_PCPhenoAge)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCPhenoAge), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCPhenoAge, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   scale_fill_manual(values=c("red","blue","green4","purple")) + 
@@ -2223,9 +1758,9 @@ PhenoAgePC_CHS_RawAge <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x 
   labs(y = element_blank(), title = "PC PhenoAge (Children Only)", x = element_blank()) + 
   theme_bw()
 # Violin plot PhenoAge Accel stratified by tissue #
-PhenoAgePC_All_AgeAccel <- ggplot(data = data_plot, aes(x = Tissue, y = PCPhenoAgeResid)) +
-  geom_violin(aes(x = Tissue, y = PCPhenoAgeResid), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCPhenoAgeResid, fill = Tissue),
+PhenoAgePC_All_AgeAccel <- ggplot(data = data_plot, aes(x = Tissue, y = mcc_PCPhenoAge_AccMinus)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCPhenoAge_AccMinus), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCPhenoAge_AccMinus, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   geom_vline(xintercept = 3.5, linetype = "dashed") +
@@ -2235,9 +1770,9 @@ PhenoAgePC_All_AgeAccel <- ggplot(data = data_plot, aes(x = Tissue, y = PCPhenoA
   theme_bw()
 # Violin plot PhenoAge Acceleration stratified by tissue and cohort #
 # TRN #
-PhenoAgePC_TRN_AgeAccel <- ggplot(data = data[data$Study_Cohort == "Telomere",], aes(x = Tissue, y = PCPhenoAgeResid)) +
-  geom_violin(aes(x = Tissue, y = PCPhenoAgeResid), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCPhenoAgeResid, fill = Tissue),
+PhenoAgePC_TRN_AgeAccel <- ggplot(data = data[data$Study_Cohort == "Telomere",], aes(x = Tissue, y = mcc_PCPhenoAge_AccMinus)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCPhenoAge_AccMinus), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCPhenoAge_AccMinus, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   scale_fill_manual(values=c("red","blue","green4","orange")) + 
@@ -2245,9 +1780,9 @@ PhenoAgePC_TRN_AgeAccel <- ggplot(data = data[data$Study_Cohort == "Telomere",],
   labs(y = element_blank(), title = "PC PhenoAge Acceleration (Adults Only)", x = element_blank()) + 
   theme_bw()
 # CHS #
-PhenoAgePC_CHS_AgeAccel <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x = Tissue, y = PCPhenoAgeResid)) +
-  geom_violin(aes(x = Tissue, y = PCPhenoAgeResid), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCPhenoAgeResid, fill = Tissue),
+PhenoAgePC_CHS_AgeAccel <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x = Tissue, y = mcc_PCPhenoAge_AccMinus)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCPhenoAge_AccMinus), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCPhenoAge_AccMinus, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   scale_fill_manual(values=c("red","blue","green4","purple")) + 
@@ -2258,56 +1793,43 @@ PhenoAgePC_CHS_AgeAccel <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(
 ### Statistical Analyses - PC GrimAge Raw ### ----
 ## Descriptive Statistics - GrimAge2 ##
 # Full cohort #
-describe(data_long$PCGrimAge.Buccal)
-describe(data_long$PCGrimAge.Saliva)
-describe(data_long$PCGrimAge.DBS)
-describe(data_long$`PCGrimAge.Buffy Coat`)
-describe(data_long$PCGrimAge.PBMC)
+describe(data_long$mcc_PCGrimAge.Buccal)
+describe(data_long$mcc_PCGrimAge.Saliva)
+describe(data_long$mcc_PCGrimAge.DBS)
+describe(data_long$`mcc_PCGrimAge.Buffy Coat`)
+describe(data_long$mcc_PCGrimAge.PBMC)
 # TRN #
-describe(data_long$PCGrimAge.Buccal[data_long$Study_Cohort.Buccal == "Telomere"])
-describe(data_long$PCGrimAge.Saliva[data_long$Study_Cohort.Saliva == "Telomere"])
-describe(data_long$PCGrimAge.DBS[data_long$Study_Cohort.DBS == "Telomere"])
-describe(data_long$PCGrimAge.PBMC[data_long$Study_Cohort.PBMC == "Telomere"])
+describe(data_long$mcc_PCGrimAge.Buccal[data_long$Study_Cohort.Buccal == "Telomere"])
+describe(data_long$mcc_PCGrimAge.Saliva[data_long$Study_Cohort.Saliva == "Telomere"])
+describe(data_long$mcc_PCGrimAge.DBS[data_long$Study_Cohort.DBS == "Telomere"])
+describe(data_long$mcc_PCGrimAge.PBMC[data_long$Study_Cohort.PBMC == "Telomere"])
 # CHS #
-describe(data_long$PCGrimAge.Buccal[data_long$Study_Cohort.Buccal == "CHS"])
-describe(data_long$PCGrimAge.Saliva[data_long$Study_Cohort.Saliva == "CHS"])
-describe(data_long$PCGrimAge.DBS[data_long$Study_Cohort.DBS == "CHS"])
-describe(data_long$`PCGrimAge.Buffy Coat`[data_long$`Study_Cohort.Buffy Coat` == "CHS"])
+describe(data_long$mcc_PCGrimAge.Buccal[data_long$Study_Cohort.Buccal == "CHS"])
+describe(data_long$mcc_PCGrimAge.Saliva[data_long$Study_Cohort.Saliva == "CHS"])
+describe(data_long$mcc_PCGrimAge.DBS[data_long$Study_Cohort.DBS == "CHS"])
+describe(data_long$`mcc_PCGrimAge.Buffy Coat`[data_long$`Study_Cohort.Buffy Coat` == "CHS"])
 ## Descriptive Statistics - GrimAge2 Acceleration ##
 # Full cohort #
-describe(data_long$PCGrimAgeResid.Buccal)
-describe(data_long$PCGrimAgeResid.Saliva)
-describe(data_long$PCGrimAgeResid.DBS)
-describe(data_long$`PCGrimAgeResid.Buffy Coat`)
-describe(data_long$PCGrimAgeResid.PBMC)
+describe(data_long$mcc_PCGrimAge_AccMinus.Buccal)
+describe(data_long$mcc_PCGrimAge_AccMinus.Saliva)
+describe(data_long$mcc_PCGrimAge_AccMinus.DBS)
+describe(data_long$`mcc_PCGrimAge_AccMinus.Buffy Coat`)
+describe(data_long$mcc_PCGrimAge_AccMinus.PBMC)
 # TRN #
-describe(data_long$PCGrimAgeResid.Buccal[data_long$Study_Cohort.Buccal == "Telomere"])
-describe(data_long$PCGrimAgeResid.Saliva[data_long$Study_Cohort.Saliva == "Telomere"])
-describe(data_long$PCGrimAgeResid.DBS[data_long$Study_Cohort.DBS == "Telomere"])
-describe(data_long$PCGrimAgeResid.PBMC[data_long$Study_Cohort.PBMC == "Telomere"])
+describe(data_long$mcc_PCGrimAge_AccMinus.Buccal[data_long$Study_Cohort.Buccal == "Telomere"])
+describe(data_long$mcc_PCGrimAge_AccMinus.Saliva[data_long$Study_Cohort.Saliva == "Telomere"])
+describe(data_long$mcc_PCGrimAge_AccMinus.DBS[data_long$Study_Cohort.DBS == "Telomere"])
+describe(data_long$mcc_PCGrimAge_AccMinus.PBMC[data_long$Study_Cohort.PBMC == "Telomere"])
 # CHS #
-describe(data_long$PCGrimAgeResid.Buccal[data_long$Study_Cohort.Buccal == "CHS"])
-describe(data_long$PCGrimAgeResid.Saliva[data_long$Study_Cohort.Saliva == "CHS"])
-describe(data_long$PCGrimAgeResid.DBS[data_long$Study_Cohort.DBS == "CHS"])
-describe(data_long$`PCGrimAgeResid.Buffy Coat`[data_long$`Study_Cohort.Buffy Coat` == "CHS"])
-## Histograms ##
-# Histograms of GrimAge2 stratified by tissue #
-ggplot(data, aes(x=PCGrimAge, color=Tissue, fill=Tissue)) +
-  geom_histogram(position="identity", alpha=0.5)+
-  theme(legend.position="top", axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
-  facet_grid(Tissue ~ .) +
-  labs(x="GrimAge2", y="Count")
-# Histograms of GrimAge2 Accel stratified by tissue #
-ggplot(data, aes(x=PCGrimAgeResid, color=Tissue, fill=Tissue)) +
-  geom_histogram(position="identity", alpha=0.5)+
-  theme(legend.position="top", axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
-  facet_grid(Tissue ~ .) +
-  labs(x="GrimAge2 Accel", y="Count")
+describe(data_long$mcc_PCGrimAge_AccMinus.Buccal[data_long$Study_Cohort.Buccal == "CHS"])
+describe(data_long$mcc_PCGrimAge_AccMinus.Saliva[data_long$Study_Cohort.Saliva == "CHS"])
+describe(data_long$mcc_PCGrimAge_AccMinus.DBS[data_long$Study_Cohort.DBS == "CHS"])
+describe(data_long$`mcc_PCGrimAge_AccMinus.Buffy Coat`[data_long$`Study_Cohort.Buffy Coat` == "CHS"])
 ## Violin Plots ##
 # Violin plot GrimAge2 stratified by tissue #
-GrimAgePC_All_RawAge <- ggplot(data = data_plot, aes(x = Tissue, y = PCGrimAge)) +
-  geom_violin(aes(x = Tissue, y = PCGrimAge), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCGrimAge, fill = Tissue),
+GrimAgePC_All_RawAge <- ggplot(data = data_plot, aes(x = Tissue, y = mcc_PCGrimAge)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCGrimAge), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCGrimAge, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   geom_vline(xintercept = 3.5, linetype = "dashed") +
@@ -2317,9 +1839,9 @@ GrimAgePC_All_RawAge <- ggplot(data = data_plot, aes(x = Tissue, y = PCGrimAge))
   theme_bw()
 # Violin plot GrimAge2 stratified by tissue and cohort #
 # TRN #
-GrimAgePC_TRN_RawAge <- ggplot(data = data[data$Study_Cohort == "Telomere",], aes(x = Tissue, y = PCGrimAge)) +
-  geom_violin(aes(x = Tissue, y = PCGrimAge), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCGrimAge, fill = Tissue),
+GrimAgePC_TRN_RawAge <- ggplot(data = data[data$Study_Cohort == "Telomere",], aes(x = Tissue, y = mcc_PCGrimAge)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCGrimAge), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCGrimAge, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   scale_fill_manual(values=c("red","blue","green4","orange")) + 
@@ -2327,9 +1849,9 @@ GrimAgePC_TRN_RawAge <- ggplot(data = data[data$Study_Cohort == "Telomere",], ae
   labs(y = element_blank(), title = "PC GrimAge (Adults Only)", x = element_blank()) + 
   theme_bw()
 # CHS #
-GrimAgePC_CHS_RawAge <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x = Tissue, y = PCGrimAge)) +
-  geom_violin(aes(x = Tissue, y = PCGrimAge), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCGrimAge, fill = Tissue),
+GrimAgePC_CHS_RawAge <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x = Tissue, y = mcc_PCGrimAge)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCGrimAge), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCGrimAge, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   scale_fill_manual(values=c("red","blue","green4","purple")) + 
@@ -2337,9 +1859,9 @@ GrimAgePC_CHS_RawAge <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x =
   labs(y = element_blank(), title = "PC GrimAge (Children Only)", x = element_blank()) + 
   theme_bw()
 # Violin plot GrimAge2 Accel stratified by tissue #
-GrimAgePC_All_AgeAccel <- ggplot(data = data_plot, aes(x = Tissue, y = PCGrimAgeResid)) +
-  geom_violin(aes(x = Tissue, y = PCGrimAgeResid), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCGrimAgeResid, fill = Tissue),
+GrimAgePC_All_AgeAccel <- ggplot(data = data_plot, aes(x = Tissue, y = mcc_PCGrimAge_AccMinus)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCGrimAge_AccMinus), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCGrimAge_AccMinus, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   geom_vline(xintercept = 3.5, linetype = "dashed") +
@@ -2349,9 +1871,9 @@ GrimAgePC_All_AgeAccel <- ggplot(data = data_plot, aes(x = Tissue, y = PCGrimAge
   theme_bw()
 # Violin plot GrimAge2 Acceleration stratified by tissue and cohort #
 # TRN #
-GrimAgePC_TRN_AgeAccel <- ggplot(data = data[data$Study_Cohort == "Telomere",], aes(x = Tissue, y = PCGrimAgeResid)) +
-  geom_violin(aes(x = Tissue, y = PCGrimAgeResid), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCGrimAgeResid, fill = Tissue),
+GrimAgePC_TRN_AgeAccel <- ggplot(data = data[data$Study_Cohort == "Telomere",], aes(x = Tissue, y = mcc_PCGrimAge_AccMinus)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCGrimAge_AccMinus), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCGrimAge_AccMinus, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   scale_fill_manual(values=c("red","blue","green4","orange")) + 
@@ -2359,9 +1881,9 @@ GrimAgePC_TRN_AgeAccel <- ggplot(data = data[data$Study_Cohort == "Telomere",], 
   labs(y = element_blank(), title = "PC GrimAge Acceleration (Adults Only)", x = element_blank()) + 
   theme_bw()
 # CHS #
-GrimAgePC_CHS_AgeAccel <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x = Tissue, y = PCGrimAgeResid)) +
-  geom_violin(aes(x = Tissue, y = PCGrimAgeResid), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCGrimAgeResid, fill = Tissue),
+GrimAgePC_CHS_AgeAccel <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x = Tissue, y = mcc_PCGrimAge_AccMinus)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCGrimAge_AccMinus), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCGrimAge_AccMinus, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   scale_fill_manual(values=c("red","blue","green4","purple")) + 
@@ -2389,56 +1911,43 @@ ggarrange(PhenoAgePC_CHS_RawAge, PhenoAgePC_CHS_AgeAccel,
 ### Statistical Analyses - PC Skin and Blood Raw ### ----
 ## Descriptive Statistics - Skin and Blood ##
 # Full cohort #
-describe(data_long$PCHorvath2.Buccal)
-describe(data_long$PCHorvath2.Saliva)
-describe(data_long$PCHorvath2.DBS)
-describe(data_long$`PCHorvath2.Buffy Coat`)
-describe(data_long$PCHorvath2.PBMC)
+describe(data_long$mcc_PCHorvath2.Buccal)
+describe(data_long$mcc_PCHorvath2.Saliva)
+describe(data_long$mcc_PCHorvath2.DBS)
+describe(data_long$`mcc_PCHorvath2.Buffy Coat`)
+describe(data_long$mcc_PCHorvath2.PBMC)
 # TRN #
-describe(data_long$PCHorvath2.Buccal[data_long$Study_Cohort.Buccal == "Telomere"])
-describe(data_long$PCHorvath2.Saliva[data_long$Study_Cohort.Saliva == "Telomere"])
-describe(data_long$PCHorvath2.DBS[data_long$Study_Cohort.DBS == "Telomere"])
-describe(data_long$PCHorvath2.PBMC[data_long$Study_Cohort.PBMC == "Telomere"])
+describe(data_long$mcc_PCHorvath2.Buccal[data_long$Study_Cohort.Buccal == "Telomere"])
+describe(data_long$mcc_PCHorvath2.Saliva[data_long$Study_Cohort.Saliva == "Telomere"])
+describe(data_long$mcc_PCHorvath2.DBS[data_long$Study_Cohort.DBS == "Telomere"])
+describe(data_long$mcc_PCHorvath2.PBMC[data_long$Study_Cohort.PBMC == "Telomere"])
 # CHS #
-describe(data_long$PCHorvath2.Buccal[data_long$Study_Cohort.Buccal == "CHS"])
-describe(data_long$PCHorvath2.Saliva[data_long$Study_Cohort.Saliva == "CHS"])
-describe(data_long$PCHorvath2.DBS[data_long$Study_Cohort.DBS == "CHS"])
-describe(data_long$`PCHorvath2.Buffy Coat`[data_long$`Study_Cohort.Buffy Coat` == "CHS"])
+describe(data_long$mcc_PCHorvath2.Buccal[data_long$Study_Cohort.Buccal == "CHS"])
+describe(data_long$mcc_PCHorvath2.Saliva[data_long$Study_Cohort.Saliva == "CHS"])
+describe(data_long$mcc_PCHorvath2.DBS[data_long$Study_Cohort.DBS == "CHS"])
+describe(data_long$`mcc_PCHorvath2.Buffy Coat`[data_long$`Study_Cohort.Buffy Coat` == "CHS"])
 ## Descriptive Statistics - Skin and Blood Acceleration ##
 # Full cohort #
-describe(data_long$PCHorvath2Resid.Buccal)
-describe(data_long$PCHorvath2Resid.Saliva)
-describe(data_long$PCHorvath2Resid.DBS)
-describe(data_long$`PCHorvath2Resid.Buffy Coat`)
-describe(data_long$PCHorvath2Resid.PBMC)
+describe(data_long$mcc_PCHorvath2_AccMinus.Buccal)
+describe(data_long$mcc_PCHorvath2_AccMinus.Saliva)
+describe(data_long$mcc_PCHorvath2_AccMinus.DBS)
+describe(data_long$`mcc_PCHorvath2_AccMinus.Buffy Coat`)
+describe(data_long$mcc_PCHorvath2_AccMinus.PBMC)
 # TRN #
-describe(data_long$PCHorvath2Resid.Buccal[data_long$Study_Cohort.Buccal == "Telomere"])
-describe(data_long$PCHorvath2Resid.Saliva[data_long$Study_Cohort.Saliva == "Telomere"])
-describe(data_long$PCHorvath2Resid.DBS[data_long$Study_Cohort.DBS == "Telomere"])
-describe(data_long$PCHorvath2Resid.PBMC[data_long$Study_Cohort.PBMC == "Telomere"])
+describe(data_long$mcc_PCHorvath2_AccMinus.Buccal[data_long$Study_Cohort.Buccal == "Telomere"])
+describe(data_long$mcc_PCHorvath2_AccMinus.Saliva[data_long$Study_Cohort.Saliva == "Telomere"])
+describe(data_long$mcc_PCHorvath2_AccMinus.DBS[data_long$Study_Cohort.DBS == "Telomere"])
+describe(data_long$mcc_PCHorvath2_AccMinus.PBMC[data_long$Study_Cohort.PBMC == "Telomere"])
 # CHS #
-describe(data_long$PCHorvath2Resid.Buccal[data_long$Study_Cohort.Buccal == "CHS"])
-describe(data_long$PCHorvath2Resid.Saliva[data_long$Study_Cohort.Saliva == "CHS"])
-describe(data_long$PCHorvath2Resid.DBS[data_long$Study_Cohort.DBS == "CHS"])
-describe(data_long$`PCHorvath2Resid.Buffy Coat`[data_long$`Study_Cohort.Buffy Coat` == "CHS"])
-## Histograms ##
-# Histograms of Skin and Blood stratified by tissue #
-ggplot(data, aes(x=PCHorvath2, color=Tissue, fill=Tissue)) +
-  geom_histogram(position="identity", alpha=0.5)+
-  theme(legend.position="top", axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
-  facet_grid(Tissue ~ .) +
-  labs(x="Skin and Blood", y="Count")
-# Histograms of Skin and Blood Accel stratified by tissue #
-ggplot(data, aes(x=PCHorvath2Resid, color=Tissue, fill=Tissue)) +
-  geom_histogram(position="identity", alpha=0.5)+
-  theme(legend.position="top", axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
-  facet_grid(Tissue ~ .) +
-  labs(x="Skin and Blood Accel", y="Count")
+describe(data_long$mcc_PCHorvath2_AccMinus.Buccal[data_long$Study_Cohort.Buccal == "CHS"])
+describe(data_long$mcc_PCHorvath2_AccMinus.Saliva[data_long$Study_Cohort.Saliva == "CHS"])
+describe(data_long$mcc_PCHorvath2_AccMinus.DBS[data_long$Study_Cohort.DBS == "CHS"])
+describe(data_long$`mcc_PCHorvath2_AccMinus.Buffy Coat`[data_long$`Study_Cohort.Buffy Coat` == "CHS"])
 ## Violin Plots ##
 # Violin plot Skin and Blood stratified by tissue #
-SkinBloodPC_All_RawAge <- ggplot(data = data_plot, aes(x = Tissue, y = PCHorvath2)) +
-  geom_violin(aes(x = Tissue, y = PCHorvath2), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCHorvath2, fill = Tissue),
+SkinBloodPC_All_RawAge <- ggplot(data = data_plot, aes(x = Tissue, y = mcc_PCHorvath2)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCHorvath2), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCHorvath2, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   geom_vline(xintercept = 3.5, linetype = "dashed") +
@@ -2448,9 +1957,9 @@ SkinBloodPC_All_RawAge <- ggplot(data = data_plot, aes(x = Tissue, y = PCHorvath
   theme_bw()
 # Violin plot Skin and Blood stratified by tissue and cohort #
 # TRN #
-SkinBloodPC_TRN_RawAge <- ggplot(data = data[data$Study_Cohort == "Telomere",], aes(x = Tissue, y = PCHorvath2)) +
-  geom_violin(aes(x = Tissue, y = PCHorvath2), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCHorvath2, fill = Tissue),
+SkinBloodPC_TRN_RawAge <- ggplot(data = data[data$Study_Cohort == "Telomere",], aes(x = Tissue, y = mcc_PCHorvath2)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCHorvath2), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCHorvath2, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   scale_fill_manual(values=c("red","blue","green4","orange")) + 
@@ -2458,9 +1967,9 @@ SkinBloodPC_TRN_RawAge <- ggplot(data = data[data$Study_Cohort == "Telomere",], 
   labs(y = element_blank(), title = "PC Skin and Blood Age (Adults Only)", x = element_blank()) + 
   theme_bw()
 # CHS #
-SkinBloodPC_CHS_RawAge <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x = Tissue, y = PCHorvath2)) +
-  geom_violin(aes(x = Tissue, y = PCHorvath2), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCHorvath2, fill = Tissue),
+SkinBloodPC_CHS_RawAge <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x = Tissue, y = mcc_PCHorvath2)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCHorvath2), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCHorvath2, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   scale_fill_manual(values=c("red","blue","green4","purple")) + 
@@ -2468,9 +1977,9 @@ SkinBloodPC_CHS_RawAge <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x
   labs(y = element_blank(), title = "PC Skin and Blood Age (Children Only)", x = element_blank()) + 
   theme_bw()
 # Violin plot Skin and Blood Accel stratified by tissue #
-SkinBloodPC_All_AgeAccel <- ggplot(data = data_plot, aes(x = Tissue, y = PCHorvath2Resid)) +
-  geom_violin(aes(x = Tissue, y = PCHorvath2Resid), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCHorvath2Resid, fill = Tissue),
+SkinBloodPC_All_AgeAccel <- ggplot(data = data_plot, aes(x = Tissue, y = mcc_PCHorvath2_AccMinus)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCHorvath2_AccMinus), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCHorvath2_AccMinus, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   geom_vline(xintercept = 3.5, linetype = "dashed") +
@@ -2480,9 +1989,9 @@ SkinBloodPC_All_AgeAccel <- ggplot(data = data_plot, aes(x = Tissue, y = PCHorva
   theme_bw()
 # Violin plot Skin and Blood Acceleration stratified by tissue and cohort #
 # TRN #
-SkinBloodPC_TRN_AgeAccel <- ggplot(data = data[data$Study_Cohort == "Telomere",], aes(x = Tissue, y = PCHorvath2Resid)) +
-  geom_violin(aes(x = Tissue, y = PCHorvath2Resid), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCHorvath2Resid, fill = Tissue),
+SkinBloodPC_TRN_AgeAccel <- ggplot(data = data[data$Study_Cohort == "Telomere",], aes(x = Tissue, y = mcc_PCHorvath2_AccMinus)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCHorvath2_AccMinus), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCHorvath2_AccMinus, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   scale_fill_manual(values=c("red","blue","green4","orange")) + 
@@ -2490,9 +1999,9 @@ SkinBloodPC_TRN_AgeAccel <- ggplot(data = data[data$Study_Cohort == "Telomere",]
   labs(y = element_blank(), title = "PC Skin and Blood Age Acceleration (Adults Only)", x = element_blank()) + 
   theme_bw()
 # CHS #
-SkinBloodPC_CHS_AgeAccel <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x = Tissue, y = PCHorvath2Resid)) +
-  geom_violin(aes(x = Tissue, y = PCHorvath2Resid), scale = "width") +
-  geom_boxplot(aes(x = Tissue, y = PCHorvath2Resid, fill = Tissue),
+SkinBloodPC_CHS_AgeAccel <- ggplot(data = data[data$Study_Cohort == "CHS",], aes(x = Tissue, y = mcc_PCHorvath2_AccMinus)) +
+  geom_violin(aes(x = Tissue, y = mcc_PCHorvath2_AccMinus), scale = "width") +
+  geom_boxplot(aes(x = Tissue, y = mcc_PCHorvath2_AccMinus, fill = Tissue),
                width = 0.3, fatten = 3, alpha = 0.7,
                position = position_dodge(width = 0.9, preserve = "total")) +
   scale_fill_manual(values=c("red","blue","green4","purple")) + 
@@ -2663,29 +2172,6 @@ corrplot(GrimAge2_Acc_Tissue_cor$r, method="ellipse",
          # Change font size of text labels
          tl.cex = 1.1)
 
-## PoAm ##
-# PoAm #
-PoAm_Tissue_cor <- corr.test(data_long[,c("PoAm.Buccal","PoAm.Saliva","PoAm.DBS",
-                                          "PoAm.Buffy Coat","PoAm.PBMC")])
-PoAm_Tissue_cor$r[4,5] <- 0
-PoAm_Tissue_cor$r[5,4] <- 0
-PoAm_Tissue_cor$p[4,5] <- 1
-PoAm_Tissue_cor$p[5,4] <- 1
-rownames(PoAm_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-colnames(PoAm_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-rownames(PoAm_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-colnames(PoAm_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-# Correlation plot #
-corrplot(PoAm_Tissue_cor$r, method="ellipse",
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = Horvath_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE)
-
 ## PACE ##
 # PACE #
 PACE_Tissue_cor <- corr.test(data_long[,c("mcc_DunedinPACE.Buccal","mcc_DunedinPACE.Saliva","mcc_DunedinPACE.DBS",
@@ -2711,54 +2197,10 @@ corrplot(PACE_Tissue_cor$r, method="ellipse",
          # Change font size of text labels
          tl.cex = 1.1)
 
-## DNAmTL ##
-# DNAmTL #
-DNAmTL_Tissue_cor <- corr.test(data_long[,c("DNAmTL.Buccal","DNAmTL.Saliva","DNAmTL.DBS",
-                                              "DNAmTL.Buffy Coat","DNAmTL.PBMC")])
-DNAmTL_Tissue_cor$r[4,5] <- 0
-DNAmTL_Tissue_cor$r[5,4] <- 0
-DNAmTL_Tissue_cor$p[4,5] <- 1
-DNAmTL_Tissue_cor$p[5,4] <- 1
-rownames(DNAmTL_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-colnames(DNAmTL_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-rownames(DNAmTL_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-colnames(DNAmTL_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-# Correlation plot #
-corrplot(DNAmTL_Tissue_cor$r, method="ellipse",
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = Horvath_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE)
-# DNAmTL age adjusted #
-DNAmTL_Adj_Tissue_cor <- corr.test(data_long[,c("DNAmTLAdjAge.Buccal","DNAmTLAdjAge.Saliva","DNAmTLAdjAge.DBS",
-                                                  "DNAmTLAdjAge.Buffy Coat","DNAmTLAdjAge.PBMC")])
-DNAmTL_Adj_Tissue_cor$r[4,5] <- 0
-DNAmTL_Adj_Tissue_cor$r[5,4] <- 0
-DNAmTL_Adj_Tissue_cor$p[4,5] <- 1
-DNAmTL_Adj_Tissue_cor$p[5,4] <- 1
-rownames(DNAmTL_Adj_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-colnames(DNAmTL_Adj_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-rownames(DNAmTL_Adj_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-colnames(DNAmTL_Adj_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-# Correlation plot #
-corrplot(DNAmTL_Adj_Tissue_cor$r, method="ellipse",
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = Horvath_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE)
-
 ## PC Horvath ##
 # Horvath age acceleration #
-HorvathPC_Age_Acc_Tissue_cor <- corr.test(data_long[,c("PCHorvath1Resid.Buccal","PCHorvath1Resid.Saliva","PCHorvath1Resid.DBS",
-                                                     "PCHorvath1Resid.Buffy Coat","PCHorvath1Resid.PBMC")])
+HorvathPC_Age_Acc_Tissue_cor <- corr.test(data_long[,c("mcc_PCHorvath1_AccMinus.Buccal","mcc_PCHorvath1_AccMinus.Saliva","mcc_PCHorvath1_AccMinus.DBS",
+                                                     "mcc_PCHorvath1_AccMinus.Buffy Coat","mcc_PCHorvath1_AccMinus.PBMC")])
 HorvathPC_Age_Acc_Tissue_cor$r[4,5] <- 0
 HorvathPC_Age_Acc_Tissue_cor$r[5,4] <- 0
 HorvathPC_Age_Acc_Tissue_cor$p[4,5] <- 1
@@ -2782,8 +2224,8 @@ corrplot(HorvathPC_Age_Acc_Tissue_cor$r, method="ellipse",
 
 ## PC Hannum ##
 # Hannum age acceleration #
-HannumPC_Age_Acc_Tissue_cor <- corr.test(data_long[,c("PCHannumResid.Buccal","PCHannumResid.Saliva","PCHannumResid.DBS",
-                                                       "PCHannumResid.Buffy Coat","PCHannumResid.PBMC")])
+HannumPC_Age_Acc_Tissue_cor <- corr.test(data_long[,c("mcc_PCHannum_AccMinus.Buccal","mcc_PCHannum_AccMinus.Saliva","mcc_PCHannum_AccMinus.DBS",
+                                                       "mcc_PCHannum_AccMinus.Buffy Coat","mcc_PCHannum_AccMinus.PBMC")])
 HannumPC_Age_Acc_Tissue_cor$r[4,5] <- 0
 HannumPC_Age_Acc_Tissue_cor$r[5,4] <- 0
 HannumPC_Age_Acc_Tissue_cor$p[4,5] <- 1
@@ -2807,8 +2249,8 @@ corrplot(HannumPC_Age_Acc_Tissue_cor$r, method="ellipse",
 
 ## PC PhenoAge ##
 # PhenoAge age acceleration #
-PhenoAgePC_Age_Acc_Tissue_cor <- corr.test(data_long[,c("PCPhenoAgeResid.Buccal","PCPhenoAgeResid.Saliva","PCPhenoAgeResid.DBS",
-                                                      "PCPhenoAgeResid.Buffy Coat","PCPhenoAgeResid.PBMC")])
+PhenoAgePC_Age_Acc_Tissue_cor <- corr.test(data_long[,c("mcc_PCPhenoAge_AccMinus.Buccal","mcc_PCPhenoAge_AccMinus.Saliva","mcc_PCPhenoAge_AccMinus.DBS",
+                                                      "mcc_PCPhenoAge_AccMinus.Buffy Coat","mcc_PCPhenoAge_AccMinus.PBMC")])
 PhenoAgePC_Age_Acc_Tissue_cor$r[4,5] <- 0
 PhenoAgePC_Age_Acc_Tissue_cor$r[5,4] <- 0
 PhenoAgePC_Age_Acc_Tissue_cor$p[4,5] <- 1
@@ -2832,8 +2274,8 @@ corrplot(PhenoAgePC_Age_Acc_Tissue_cor$r, method="ellipse",
 
 ## PC GrimAge ##
 # GrimAge age acceleration #
-GrimAgePC_Age_Acc_Tissue_cor <- corr.test(data_long[,c("PCGrimAgeResid.Buccal","PCGrimAgeResid.Saliva","PCGrimAgeResid.DBS",
-                                                        "PCGrimAgeResid.Buffy Coat","PCGrimAgeResid.PBMC")])
+GrimAgePC_Age_Acc_Tissue_cor <- corr.test(data_long[,c("mcc_PCGrimAge_AccMinus.Buccal","mcc_PCGrimAge_AccMinus.Saliva","mcc_PCGrimAge_AccMinus.DBS",
+                                                        "mcc_PCGrimAge_AccMinus.Buffy Coat","mcc_PCGrimAge_AccMinus.PBMC")])
 GrimAgePC_Age_Acc_Tissue_cor$r[4,5] <- 0
 GrimAgePC_Age_Acc_Tissue_cor$r[5,4] <- 0
 GrimAgePC_Age_Acc_Tissue_cor$p[4,5] <- 1
@@ -2857,8 +2299,8 @@ corrplot(GrimAgePC_Age_Acc_Tissue_cor$r, method="ellipse",
 
 ## PC Skin and Blood ##
 # Skin and Blood age acceleration #
-SkinBloodPC_Age_Acc_Tissue_cor <- corr.test(data_long[,c("PCHorvath2Resid.Buccal","PCHorvath2Resid.Saliva","PCHorvath2Resid.DBS",
-                                                       "PCHorvath2Resid.Buffy Coat","PCHorvath2Resid.PBMC")])
+SkinBloodPC_Age_Acc_Tissue_cor <- corr.test(data_long[,c("mcc_PCHorvath2_AccMinus.Buccal","mcc_PCHorvath2_AccMinus.Saliva","mcc_PCHorvath2_AccMinus.DBS",
+                                                       "mcc_PCHorvath2_AccMinus.Buffy Coat","mcc_PCHorvath2_AccMinus.PBMC")])
 SkinBloodPC_Age_Acc_Tissue_cor$r[4,5] <- 0
 SkinBloodPC_Age_Acc_Tissue_cor$r[5,4] <- 0
 SkinBloodPC_Age_Acc_Tissue_cor$p[4,5] <- 1
@@ -3136,8 +2578,8 @@ corrplot(SkinBloodCHS_Age_Acc_Tissue_cor$r, method="ellipse",
 
 ## PC Horvath (Adults Only) ##
 # PC Horvath age acceleration #
-HorvathTRN_PC_Age_Acc_Tissue_cor <- corr.test(data_long_TRN[,c("PCHorvath1Resid.Buccal","PCHorvath1Resid.Saliva","PCHorvath1Resid.DBS",
-                                                       "PCHorvath1Resid.PBMC")])
+HorvathTRN_PC_Age_Acc_Tissue_cor <- corr.test(data_long_TRN[,c("mcc_PCHorvath1_AccMinus.Buccal","mcc_PCHorvath1_AccMinus.Saliva","mcc_PCHorvath1_AccMinus.DBS",
+                                                       "mcc_PCHorvath1_AccMinus.PBMC")])
 rownames(HorvathTRN_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
 colnames(HorvathTRN_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
 rownames(HorvathTRN_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
@@ -3157,8 +2599,8 @@ corrplot(HorvathTRN_PC_Age_Acc_Tissue_cor$r, method="ellipse",
 
 ## PC Horvath (Children Only) ##
 # PC Horvath age acceleration #
-HorvathCHS_PC_Age_Acc_Tissue_cor <- corr.test(data_long_CHS[,c("PCHorvath1Resid.Buccal","PCHorvath1Resid.Saliva","PCHorvath1Resid.DBS",
-                                                            "PCHorvath1Resid.Buffy Coat")])
+HorvathCHS_PC_Age_Acc_Tissue_cor <- corr.test(data_long_CHS[,c("mcc_PCHorvath1_AccMinus.Buccal","mcc_PCHorvath1_AccMinus.Saliva","mcc_PCHorvath1_AccMinus.DBS",
+                                                            "mcc_PCHorvath1_AccMinus.Buffy Coat")])
 rownames(HorvathCHS_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
 colnames(HorvathCHS_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
 rownames(HorvathCHS_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
@@ -3178,8 +2620,8 @@ corrplot(HorvathCHS_PC_Age_Acc_Tissue_cor$r, method="ellipse",
 
 ## PC Hannum (Adults Only) ##
 # PC Hannum age acceleration #
-HannumTRN_PC_Age_Acc_Tissue_cor <- corr.test(data_long_TRN[,c("PCHannumResid.Buccal","PCHannumResid.Saliva","PCHannumResid.DBS",
-                                                            "PCHannumResid.PBMC")])
+HannumTRN_PC_Age_Acc_Tissue_cor <- corr.test(data_long_TRN[,c("mcc_PCHannum_AccMinus.Buccal","mcc_PCHannum_AccMinus.Saliva","mcc_PCHannum_AccMinus.DBS",
+                                                            "mcc_PCHannum_AccMinus.PBMC")])
 rownames(HannumTRN_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
 colnames(HannumTRN_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
 rownames(HannumTRN_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
@@ -3199,8 +2641,8 @@ corrplot(HannumTRN_PC_Age_Acc_Tissue_cor$r, method="ellipse",
 
 ## PC Hannum (Children Only) ##
 # PC Hannum age acceleration #
-HannumCHS_PC_Age_Acc_Tissue_cor <- corr.test(data_long_CHS[,c("PCHannumResid.Buccal","PCHannumResid.Saliva","PCHannumResid.DBS",
-                                                            "PCHannumResid.Buffy Coat")])
+HannumCHS_PC_Age_Acc_Tissue_cor <- corr.test(data_long_CHS[,c("mcc_PCHannum_AccMinus.Buccal","mcc_PCHannum_AccMinus.Saliva","mcc_PCHannum_AccMinus.DBS",
+                                                            "mcc_PCHannum_AccMinus.Buffy Coat")])
 rownames(HannumCHS_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
 colnames(HannumCHS_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
 rownames(HannumCHS_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
@@ -3220,8 +2662,8 @@ corrplot(HannumCHS_PC_Age_Acc_Tissue_cor$r, method="ellipse",
 
 ## PC PhenoAge (Adults Only) ##
 # PC PhenoAge age acceleration #
-PhenoAgeTRN_PC_Age_Acc_Tissue_cor <- corr.test(data_long_TRN[,c("PCPhenoAgeResid.Buccal","PCPhenoAgeResid.Saliva","PCPhenoAgeResid.DBS",
-                                                               "PCPhenoAgeResid.PBMC")])
+PhenoAgeTRN_PC_Age_Acc_Tissue_cor <- corr.test(data_long_TRN[,c("mcc_PCPhenoAge_AccMinus.Buccal","mcc_PCPhenoAge_AccMinus.Saliva","mcc_PCPhenoAge_AccMinus.DBS",
+                                                               "mcc_PCPhenoAge_AccMinus.PBMC")])
 rownames(PhenoAgeTRN_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
 colnames(PhenoAgeTRN_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
 rownames(PhenoAgeTRN_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
@@ -3241,8 +2683,8 @@ corrplot(PhenoAgeTRN_PC_Age_Acc_Tissue_cor$r, method="ellipse",
 
 ## PC PhenoAge (Children Only) ##
 # PC PhenoAge age acceleration #
-PhenoAgeCHS_PC_Age_Acc_Tissue_cor <- corr.test(data_long_CHS[,c("PCPhenoAgeResid.Buccal","PCPhenoAgeResid.Saliva","PCPhenoAgeResid.DBS",
-                                                               "PCPhenoAgeResid.Buffy Coat")])
+PhenoAgeCHS_PC_Age_Acc_Tissue_cor <- corr.test(data_long_CHS[,c("mcc_PCPhenoAge_AccMinus.Buccal","mcc_PCPhenoAge_AccMinus.Saliva","mcc_PCPhenoAge_AccMinus.DBS",
+                                                               "mcc_PCPhenoAge_AccMinus.Buffy Coat")])
 rownames(PhenoAgeCHS_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
 colnames(PhenoAgeCHS_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
 rownames(PhenoAgeCHS_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
@@ -3262,8 +2704,8 @@ corrplot(PhenoAgeCHS_PC_Age_Acc_Tissue_cor$r, method="ellipse",
 
 ## PC GrimAge (Adults Only) ##
 # PC GrimAge age acceleration #
-GrimAgeTRN_PC_Age_Acc_Tissue_cor <- corr.test(data_long_TRN[,c("PCGrimAgeResid.Buccal","PCGrimAgeResid.Saliva","PCGrimAgeResid.DBS",
-                                                                "PCGrimAgeResid.PBMC")])
+GrimAgeTRN_PC_Age_Acc_Tissue_cor <- corr.test(data_long_TRN[,c("mcc_PCGrimAge_AccMinus.Buccal","mcc_PCGrimAge_AccMinus.Saliva","mcc_PCGrimAge_AccMinus.DBS",
+                                                                "mcc_PCGrimAge_AccMinus.PBMC")])
 rownames(GrimAgeTRN_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
 colnames(GrimAgeTRN_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
 rownames(GrimAgeTRN_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
@@ -3283,8 +2725,8 @@ corrplot(GrimAgeTRN_PC_Age_Acc_Tissue_cor$r, method="ellipse",
 
 ## PC GrimAge (Children Only) ##
 # PC GrimAge age acceleration #
-GrimAgeCHS_PC_Age_Acc_Tissue_cor <- corr.test(data_long_CHS[,c("PCGrimAgeResid.Buccal","PCGrimAgeResid.Saliva","PCGrimAgeResid.DBS",
-                                                                "PCGrimAgeResid.Buffy Coat")])
+GrimAgeCHS_PC_Age_Acc_Tissue_cor <- corr.test(data_long_CHS[,c("mcc_PCGrimAge_AccMinus.Buccal","mcc_PCGrimAge_AccMinus.Saliva","mcc_PCGrimAge_AccMinus.DBS",
+                                                                "mcc_PCGrimAge_AccMinus.Buffy Coat")])
 rownames(GrimAgeCHS_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
 colnames(GrimAgeCHS_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
 rownames(GrimAgeCHS_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
@@ -3304,8 +2746,8 @@ corrplot(GrimAgeCHS_PC_Age_Acc_Tissue_cor$r, method="ellipse",
 
 ## PC Skin and Blood (Adults Only) ##
 # PC Skin and Blood age acceleration #
-SkinBloodTRN_PC_Age_Acc_Tissue_cor <- corr.test(data_long_TRN[,c("PCHorvath2Resid.Buccal","PCHorvath2Resid.Saliva","PCHorvath2Resid.DBS",
-                                                               "PCHorvath2Resid.PBMC")])
+SkinBloodTRN_PC_Age_Acc_Tissue_cor <- corr.test(data_long_TRN[,c("mcc_PCHorvath2_AccMinus.Buccal","mcc_PCHorvath2_AccMinus.Saliva","mcc_PCHorvath2_AccMinus.DBS",
+                                                               "mcc_PCHorvath2_AccMinus.PBMC")])
 rownames(SkinBloodTRN_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
 colnames(SkinBloodTRN_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
 rownames(SkinBloodTRN_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
@@ -3325,8 +2767,8 @@ corrplot(SkinBloodTRN_PC_Age_Acc_Tissue_cor$r, method="ellipse",
 
 ## PC Skin and Blood (Children Only) ##
 # PC Skin and Blood age acceleration #
-SkinBloodCHS_PC_Age_Acc_Tissue_cor <- corr.test(data_long_CHS[,c("PCHorvath2Resid.Buccal","PCHorvath2Resid.Saliva","PCHorvath2Resid.DBS",
-                                                               "PCHorvath2Resid.Buffy Coat")])
+SkinBloodCHS_PC_Age_Acc_Tissue_cor <- corr.test(data_long_CHS[,c("mcc_PCHorvath2_AccMinus.Buccal","mcc_PCHorvath2_AccMinus.Saliva","mcc_PCHorvath2_AccMinus.DBS",
+                                                               "mcc_PCHorvath2_AccMinus.Buffy Coat")])
 rownames(SkinBloodCHS_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
 colnames(SkinBloodCHS_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
 rownames(SkinBloodCHS_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
@@ -3483,164 +2925,164 @@ t.test(data_long_CHS$mcc_PedBE.DBS, data_long_CHS$`mcc_PedBE.Buffy Coat`, paired
 ### Statistical Analyses - Paired T-Testing Across Standard and PC Clocks Within-Tissue ### ----
 ## Horvath ##
 # Buccal  #
-t.test(data_long$mcc_Horvath1.Buccal, data_long$PCHorvath1.Buccal, paired = TRUE)
+t.test(data_long$mcc_Horvath1.Buccal, data_long$mcc_PCHorvath1.Buccal, paired = TRUE)
 # Saliva #
-t.test(data_long$mcc_Horvath1.Saliva, data_long$PCHorvath1.Saliva, paired = TRUE)
+t.test(data_long$mcc_Horvath1.Saliva, data_long$mcc_PCHorvath1.Saliva, paired = TRUE)
 # DBS #
-t.test(data_long$mcc_Horvath1.DBS, data_long$PCHorvath1.DBS, paired = TRUE)
+t.test(data_long$mcc_Horvath1.DBS, data_long$mcc_PCHorvath1.DBS, paired = TRUE)
 # Buffy Coat #
-t.test(data_long$`mcc_Horvath1.Buffy Coat`, data_long$`PCHorvath1.Buffy Coat`, paired = TRUE)
+t.test(data_long$`mcc_Horvath1.Buffy Coat`, data_long$`mcc_PCHorvath1.Buffy Coat`, paired = TRUE)
 # PBMC #
-t.test(data_long$mcc_Horvath1.PBMC, data_long$PCHorvath1.PBMC, paired = TRUE)
+t.test(data_long$mcc_Horvath1.PBMC, data_long$mcc_PCHorvath1.PBMC, paired = TRUE)
 
 ## Hannum ##
 # Buccal  #
-t.test(data_long$mcc_Hannum.Buccal, data_long$PCHannum.Buccal, paired = TRUE)
+t.test(data_long$mcc_Hannum.Buccal, data_long$mcc_PCHannum.Buccal, paired = TRUE)
 # Saliva #
-t.test(data_long$mcc_Hannum.Saliva, data_long$PCHannum.Saliva, paired = TRUE)
+t.test(data_long$mcc_Hannum.Saliva, data_long$mcc_PCHannum.Saliva, paired = TRUE)
 # DBS #
-t.test(data_long$mcc_Hannum.DBS, data_long$PCHannum.DBS, paired = TRUE)
+t.test(data_long$mcc_Hannum.DBS, data_long$mcc_PCHannum.DBS, paired = TRUE)
 # Buffy Coat #
-t.test(data_long$`mcc_Hannum.Buffy Coat`, data_long$`PCHannum.Buffy Coat`, paired = TRUE)
+t.test(data_long$`mcc_Hannum.Buffy Coat`, data_long$`mcc_PCHannum.Buffy Coat`, paired = TRUE)
 # PBMC #
-t.test(data_long$mcc_Hannum.PBMC, data_long$PCHannum.PBMC, paired = TRUE)
+t.test(data_long$mcc_Hannum.PBMC, data_long$mcc_PCHannum.PBMC, paired = TRUE)
 
 ## PhenoAge ##
 # Buccal  #
-t.test(data_long$mcc_PhenoAge.Buccal, data_long$PCPhenoAge.Buccal, paired = TRUE)
+t.test(data_long$mcc_PhenoAge.Buccal, data_long$mcc_PCPhenoAge.Buccal, paired = TRUE)
 # Saliva #
-t.test(data_long$mcc_PhenoAge.Saliva, data_long$PCPhenoAge.Saliva, paired = TRUE)
+t.test(data_long$mcc_PhenoAge.Saliva, data_long$mcc_PCPhenoAge.Saliva, paired = TRUE)
 # DBS #
-t.test(data_long$mcc_PhenoAge.DBS, data_long$PCPhenoAge.DBS, paired = TRUE)
+t.test(data_long$mcc_PhenoAge.DBS, data_long$mcc_PCPhenoAge.DBS, paired = TRUE)
 # Buffy Coat #
-t.test(data_long$`mcc_PhenoAge.Buffy Coat`, data_long$`PCPhenoAge.Buffy Coat`, paired = TRUE)
+t.test(data_long$`mcc_PhenoAge.Buffy Coat`, data_long$`mcc_PCPhenoAge.Buffy Coat`, paired = TRUE)
 # PBMC #
-t.test(data_long$mcc_PhenoAge.PBMC, data_long$PCPhenoAge.PBMC, paired = TRUE)
+t.test(data_long$mcc_PhenoAge.PBMC, data_long$mcc_PCPhenoAge.PBMC, paired = TRUE)
 
 ## GrimAge ##
 # Buccal  #
-t.test(data_long$mcc_GrimAge2.Buccal, data_long$PCGrimAge.Buccal, paired = TRUE)
+t.test(data_long$mcc_GrimAge2.Buccal, data_long$mcc_PCGrimAge.Buccal, paired = TRUE)
 # Saliva #
-t.test(data_long$mcc_GrimAge2.Saliva, data_long$PCGrimAge.Saliva, paired = TRUE)
+t.test(data_long$mcc_GrimAge2.Saliva, data_long$mcc_PCGrimAge.Saliva, paired = TRUE)
 # DBS #
-t.test(data_long$mcc_GrimAge2.DBS, data_long$PCGrimAge.DBS, paired = TRUE)
+t.test(data_long$mcc_GrimAge2.DBS, data_long$mcc_PCGrimAge.DBS, paired = TRUE)
 # Buffy Coat #
-t.test(data_long$`mcc_GrimAge2.Buffy Coat`, data_long$`PCGrimAge.Buffy Coat`, paired = TRUE)
+t.test(data_long$`mcc_GrimAge2.Buffy Coat`, data_long$`mcc_PCGrimAge.Buffy Coat`, paired = TRUE)
 # PBMC #
-t.test(data_long$mcc_GrimAge2.PBMC, data_long$PCGrimAge.PBMC, paired = TRUE)
+t.test(data_long$mcc_GrimAge2.PBMC, data_long$mcc_PCGrimAge.PBMC, paired = TRUE)
 
 ## Skin and Blood ##
 # Buccal  #
-t.test(data_long$mcc_Horvath2.Buccal, data_long$PCHorvath2.Buccal, paired = TRUE)
+t.test(data_long$mcc_Horvath2.Buccal, data_long$mcc_PCHorvath2.Buccal, paired = TRUE)
 # Saliva #
-t.test(data_long$mcc_Horvath2.Saliva, data_long$PCHorvath2.Saliva, paired = TRUE)
+t.test(data_long$mcc_Horvath2.Saliva, data_long$mcc_PCHorvath2.Saliva, paired = TRUE)
 # DBS #
-t.test(data_long$mcc_Horvath2.DBS, data_long$PCHorvath2.DBS, paired = TRUE)
+t.test(data_long$mcc_Horvath2.DBS, data_long$mcc_PCHorvath2.DBS, paired = TRUE)
 # Buffy Coat #
-t.test(data_long$`mcc_Horvath2.Buffy Coat`, data_long$`PCHorvath2.Buffy Coat`, paired = TRUE)
+t.test(data_long$`mcc_Horvath2.Buffy Coat`, data_long$`mcc_PCHorvath2.Buffy Coat`, paired = TRUE)
 # PBMC #
-t.test(data_long$mcc_Horvath2.PBMC, data_long$PCHorvath2.PBMC, paired = TRUE)
+t.test(data_long$mcc_Horvath2.PBMC, data_long$mcc_PCHorvath2.PBMC, paired = TRUE)
 
 ### Statistical Analyses - Paired T-Testing Across Tissues (PC Clocks) ### ----
 ## Horvath ##
 # Buccal vs Saliva #
-t.test(data_long$PCHorvath1.Buccal, data_long$PCHorvath1.Saliva, paired = TRUE)
+t.test(data_long$mcc_PCHorvath1.Buccal, data_long$mcc_PCHorvath1.Saliva, paired = TRUE)
 # Buccal vs DBS #
-t.test(data_long$PCHorvath1.Buccal, data_long$PCHorvath1.DBS, paired = TRUE)
+t.test(data_long$mcc_PCHorvath1.Buccal, data_long$mcc_PCHorvath1.DBS, paired = TRUE)
 # Buccal vs BC #
-t.test(data_long$PCHorvath1.Buccal, data_long$`PCHorvath1.Buffy Coat`, paired = TRUE)
+t.test(data_long$mcc_PCHorvath1.Buccal, data_long$`mcc_PCHorvath1.Buffy Coat`, paired = TRUE)
 # Buccal vs PBMC #
-t.test(data_long$PCHorvath1.Buccal, data_long$PCHorvath1.PBMC, paired = TRUE)
+t.test(data_long$mcc_PCHorvath1.Buccal, data_long$mcc_PCHorvath1.PBMC, paired = TRUE)
 # Saliva vs DBS #
-t.test(data_long$PCHorvath1.Saliva, data_long$PCHorvath1.DBS, paired = TRUE)
+t.test(data_long$mcc_PCHorvath1.Saliva, data_long$mcc_PCHorvath1.DBS, paired = TRUE)
 # Saliva vs BC #
-t.test(data_long$PCHorvath1.Saliva, data_long$`PCHorvath1.Buffy Coat`, paired = TRUE)
+t.test(data_long$mcc_PCHorvath1.Saliva, data_long$`mcc_PCHorvath1.Buffy Coat`, paired = TRUE)
 # Saliva vs PBMC #
-t.test(data_long$PCHorvath1.Saliva, data_long$PCHorvath1.PBMC, paired = TRUE)
+t.test(data_long$mcc_PCHorvath1.Saliva, data_long$mcc_PCHorvath1.PBMC, paired = TRUE)
 # DBS vs BC #
-t.test(data_long$PCHorvath1.DBS, data_long$`PCHorvath1.Buffy Coat`, paired = TRUE)
+t.test(data_long$mcc_PCHorvath1.DBS, data_long$`mcc_PCHorvath1.Buffy Coat`, paired = TRUE)
 # DBS vs PBMC #
-t.test(data_long$PCHorvath1.DBS, data_long$PCHorvath1.PBMC, paired = TRUE)
+t.test(data_long$mcc_PCHorvath1.DBS, data_long$mcc_PCHorvath1.PBMC, paired = TRUE)
 
 ## Hannum ##
 # Buccal vs Saliva #
-t.test(data_long$PCHannum.Buccal, data_long$PCHannum.Saliva, paired = TRUE)
+t.test(data_long$mcc_PCHannum.Buccal, data_long$mcc_PCHannum.Saliva, paired = TRUE)
 # Buccal vs DBS #
-t.test(data_long$PCHannum.Buccal, data_long$PCHannum.DBS, paired = TRUE)
+t.test(data_long$mcc_PCHannum.Buccal, data_long$mcc_PCHannum.DBS, paired = TRUE)
 # Buccal vs BC #
-t.test(data_long$PCHannum.Buccal, data_long$`PCHannum.Buffy Coat`, paired = TRUE)
+t.test(data_long$mcc_PCHannum.Buccal, data_long$`mcc_PCHannum.Buffy Coat`, paired = TRUE)
 # Buccal vs PBMC #
-t.test(data_long$PCHannum.Buccal, data_long$PCHannum.PBMC, paired = TRUE)
+t.test(data_long$mcc_PCHannum.Buccal, data_long$mcc_PCHannum.PBMC, paired = TRUE)
 # Saliva vs DBS #
-t.test(data_long$PCHannum.Saliva, data_long$PCHannum.DBS, paired = TRUE)
+t.test(data_long$mcc_PCHannum.Saliva, data_long$mcc_PCHannum.DBS, paired = TRUE)
 # Saliva vs BC #
-t.test(data_long$PCHannum.Saliva, data_long$`PCHannum.Buffy Coat`, paired = TRUE)
+t.test(data_long$mcc_PCHannum.Saliva, data_long$`mcc_PCHannum.Buffy Coat`, paired = TRUE)
 # Saliva vs PBMC #
-t.test(data_long$PCHannum.Saliva, data_long$PCHannum.PBMC, paired = TRUE)
+t.test(data_long$mcc_PCHannum.Saliva, data_long$mcc_PCHannum.PBMC, paired = TRUE)
 # DBS vs BC #
-t.test(data_long$PCHannum.DBS, data_long$`PCHannum.Buffy Coat`, paired = TRUE)
+t.test(data_long$mcc_PCHannum.DBS, data_long$`mcc_PCHannum.Buffy Coat`, paired = TRUE)
 # DBS vs PBMC #
-t.test(data_long$PCHannum.DBS, data_long$PCHannum.PBMC, paired = TRUE)
+t.test(data_long$mcc_PCHannum.DBS, data_long$mcc_PCHannum.PBMC, paired = TRUE)
 
 ## PhenoAge ##
 # Buccal vs Saliva #
-t.test(data_long$PCPhenoAge.Buccal, data_long$PCPhenoAge.Saliva, paired = TRUE)
+t.test(data_long$mcc_PCPhenoAge.Buccal, data_long$mcc_PCPhenoAge.Saliva, paired = TRUE)
 # Buccal vs DBS #
-t.test(data_long$PCPhenoAge.Buccal, data_long$PCPhenoAge.DBS, paired = TRUE)
+t.test(data_long$mcc_PCPhenoAge.Buccal, data_long$mcc_PCPhenoAge.DBS, paired = TRUE)
 # Buccal vs BC #
-t.test(data_long$PCPhenoAge.Buccal, data_long$`PCPhenoAge.Buffy Coat`, paired = TRUE)
+t.test(data_long$mcc_PCPhenoAge.Buccal, data_long$`mcc_PCPhenoAge.Buffy Coat`, paired = TRUE)
 # Buccal vs PBMC #
-t.test(data_long$PCPhenoAge.Buccal, data_long$PCPhenoAge.PBMC, paired = TRUE)
+t.test(data_long$mcc_PCPhenoAge.Buccal, data_long$mcc_PCPhenoAge.PBMC, paired = TRUE)
 # Saliva vs DBS #
-t.test(data_long$PCPhenoAge.Saliva, data_long$PCPhenoAge.DBS, paired = TRUE)
+t.test(data_long$mcc_PCPhenoAge.Saliva, data_long$mcc_PCPhenoAge.DBS, paired = TRUE)
 # Saliva vs BC #
-t.test(data_long$PCPhenoAge.Saliva, data_long$`PCPhenoAge.Buffy Coat`, paired = TRUE)
+t.test(data_long$mcc_PCPhenoAge.Saliva, data_long$`mcc_PCPhenoAge.Buffy Coat`, paired = TRUE)
 # Saliva vs PBMC #
-t.test(data_long$PCPhenoAge.Saliva, data_long$PCPhenoAge.PBMC, paired = TRUE)
+t.test(data_long$mcc_PCPhenoAge.Saliva, data_long$mcc_PCPhenoAge.PBMC, paired = TRUE)
 # DBS vs BC #
-t.test(data_long$PCPhenoAge.DBS, data_long$`PCPhenoAge.Buffy Coat`, paired = TRUE)
+t.test(data_long$mcc_PCPhenoAge.DBS, data_long$`mcc_PCPhenoAge.Buffy Coat`, paired = TRUE)
 # DBS vs PBMC #
-t.test(data_long$PCPhenoAge.DBS, data_long$PCPhenoAge.PBMC, paired = TRUE)
+t.test(data_long$mcc_PCPhenoAge.DBS, data_long$mcc_PCPhenoAge.PBMC, paired = TRUE)
 
 ## GrimAge2 ##
 # Buccal vs Saliva #
-t.test(data_long$PCGrimAge.Buccal, data_long$PCGrimAge.Saliva, paired = TRUE)
+t.test(data_long$mcc_PCGrimAge.Buccal, data_long$mcc_PCGrimAge.Saliva, paired = TRUE)
 # Buccal vs DBS #
-t.test(data_long$PCGrimAge.Buccal, data_long$PCGrimAge.DBS, paired = TRUE)
+t.test(data_long$mcc_PCGrimAge.Buccal, data_long$mcc_PCGrimAge.DBS, paired = TRUE)
 # Buccal vs BC #
-t.test(data_long$PCGrimAge.Buccal, data_long$`PCGrimAge.Buffy Coat`, paired = TRUE)
+t.test(data_long$mcc_PCGrimAge.Buccal, data_long$`mcc_PCGrimAge.Buffy Coat`, paired = TRUE)
 # Buccal vs PBMC #
-t.test(data_long$PCGrimAge.Buccal, data_long$PCGrimAge.PBMC, paired = TRUE)
+t.test(data_long$mcc_PCGrimAge.Buccal, data_long$mcc_PCGrimAge.PBMC, paired = TRUE)
 # Saliva vs DBS #
-t.test(data_long$PCGrimAge.Saliva, data_long$PCGrimAge.DBS, paired = TRUE)
+t.test(data_long$mcc_PCGrimAge.Saliva, data_long$mcc_PCGrimAge.DBS, paired = TRUE)
 # Saliva vs BC #
-t.test(data_long$PCGrimAge.Saliva, data_long$`PCGrimAge.Buffy Coat`, paired = TRUE)
+t.test(data_long$mcc_PCGrimAge.Saliva, data_long$`mcc_PCGrimAge.Buffy Coat`, paired = TRUE)
 # Saliva vs PBMC #
-t.test(data_long$PCGrimAge.Saliva, data_long$PCGrimAge.PBMC, paired = TRUE)
+t.test(data_long$mcc_PCGrimAge.Saliva, data_long$mcc_PCGrimAge.PBMC, paired = TRUE)
 # DBS vs BC #
-t.test(data_long$PCGrimAge.DBS, data_long$`PCGrimAge.Buffy Coat`, paired = TRUE)
+t.test(data_long$mcc_PCGrimAge.DBS, data_long$`mcc_PCGrimAge.Buffy Coat`, paired = TRUE)
 # DBS vs PBMC #
-t.test(data_long$PCGrimAge.DBS, data_long$PCGrimAge.PBMC, paired = TRUE)
+t.test(data_long$mcc_PCGrimAge.DBS, data_long$mcc_PCGrimAge.PBMC, paired = TRUE)
 
 ## Skin and Blood ##
 # Buccal vs Saliva #
-t.test(data_long$PCHorvath2.Buccal, data_long$PCHorvath2.Saliva, paired = TRUE)
+t.test(data_long$mcc_PCHorvath2.Buccal, data_long$mcc_PCHorvath2.Saliva, paired = TRUE)
 # Buccal vs DBS #
-t.test(data_long$PCHorvath2.Buccal, data_long$PCHorvath2.DBS, paired = TRUE)
+t.test(data_long$mcc_PCHorvath2.Buccal, data_long$mcc_PCHorvath2.DBS, paired = TRUE)
 # Buccal vs BC #
-t.test(data_long$PCHorvath2.Buccal, data_long$`PCHorvath2.Buffy Coat`, paired = TRUE)
+t.test(data_long$mcc_PCHorvath2.Buccal, data_long$`mcc_PCHorvath2.Buffy Coat`, paired = TRUE)
 # Buccal vs PBMC #
-t.test(data_long$PCHorvath2.Buccal, data_long$PCHorvath2.PBMC, paired = TRUE)
+t.test(data_long$mcc_PCHorvath2.Buccal, data_long$mcc_PCHorvath2.PBMC, paired = TRUE)
 # Saliva vs DBS #
-t.test(data_long$PCHorvath2.Saliva, data_long$PCHorvath2.DBS, paired = TRUE)
+t.test(data_long$mcc_PCHorvath2.Saliva, data_long$mcc_PCHorvath2.DBS, paired = TRUE)
 # Saliva vs BC #
-t.test(data_long$PCHorvath2.Saliva, data_long$`PCHorvath2.Buffy Coat`, paired = TRUE)
+t.test(data_long$mcc_PCHorvath2.Saliva, data_long$`mcc_PCHorvath2.Buffy Coat`, paired = TRUE)
 # Saliva vs PBMC #
-t.test(data_long$PCHorvath2.Saliva, data_long$PCHorvath2.PBMC, paired = TRUE)
+t.test(data_long$mcc_PCHorvath2.Saliva, data_long$mcc_PCHorvath2.PBMC, paired = TRUE)
 # DBS vs BC #
-t.test(data_long$PCHorvath2.DBS, data_long$`PCHorvath2.Buffy Coat`, paired = TRUE)
+t.test(data_long$mcc_PCHorvath2.DBS, data_long$`mcc_PCHorvath2.Buffy Coat`, paired = TRUE)
 # DBS vs PBMC #
-t.test(data_long$PCHorvath2.DBS, data_long$PCHorvath2.PBMC, paired = TRUE)
+t.test(data_long$mcc_PCHorvath2.DBS, data_long$mcc_PCHorvath2.PBMC, paired = TRUE)
 
 ### Statistical Analyses - Paired T-Testing Across Tissues (Adults) ### ----
 ## Horvath ##
@@ -3731,101 +3173,101 @@ t.test(data_long_TRN$mcc_Horvath2.DBS, data_long_TRN$mcc_Horvath2.PBMC, paired =
 ### Statistical Analyses - Paired T-Testing Across Tissues (Children) ### ----
 ## Horvath ##
 # Buccal vs Saliva #
-t.test(data_long_CHS$mcc_Horvath1.Buccal, data_long_CHS$mcc_Horvath1.Saliva, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_Horvath1.Buccal, data_long_CHS$mcc_Horvath1.Saliva, paired = TRUE)
 # Buccal vs DBS #
-t.test(data_long_CHS$mcc_Horvath1.Buccal, data_long_CHS$mcc_Horvath1.DBS, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_Horvath1.Buccal, data_long_CHS$mcc_Horvath1.DBS, paired = TRUE)
 # Buccal vs BC #
-t.test(data_long_CHS$mcc_Horvath1.Buccal, data_long_CHS$`mcc_Horvath1.Buffy Coat`, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_Horvath1.Buccal, data_long_CHS$`mcc_Horvath1.Buffy Coat`, paired = TRUE)
 # Saliva vs DBS #
-t.test(data_long_CHS$mcc_Horvath1.Saliva, data_long_CHS$mcc_Horvath1.DBS, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_Horvath1.Saliva, data_long_CHS$mcc_Horvath1.DBS, paired = TRUE)
 # Saliva vs BC #
-t.test(data_long_CHS$mcc_Horvath1.Saliva, data_long_CHS$`mcc_Horvath1.Buffy Coat`, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_Horvath1.Saliva, data_long_CHS$`mcc_Horvath1.Buffy Coat`, paired = TRUE)
 # DBS vs BC #
-t.test(data_long_CHS$mcc_Horvath1.DBS, data_long_CHS$`mcc_Horvath1.Buffy Coat`, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_Horvath1.DBS, data_long_CHS$`mcc_Horvath1.Buffy Coat`, paired = TRUE)
 
 ## Hannum ##
 # Buccal vs Saliva #
-t.test(data_long_CHS$mcc_Hannum.Buccal, data_long_CHS$mcc_Hannum.Saliva, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_Hannum.Buccal, data_long_CHS$mcc_Hannum.Saliva, paired = TRUE)
 # Buccal vs DBS #
-t.test(data_long_CHS$mcc_Hannum.Buccal, data_long_CHS$mcc_Hannum.DBS, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_Hannum.Buccal, data_long_CHS$mcc_Hannum.DBS, paired = TRUE)
 # Buccal vs BC #
-t.test(data_long_CHS$mcc_Hannum.Buccal, data_long_CHS$`mcc_Hannum.Buffy Coat`, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_Hannum.Buccal, data_long_CHS$`mcc_Hannum.Buffy Coat`, paired = TRUE)
 # Saliva vs DBS #
-t.test(data_long_CHS$mcc_Hannum.Saliva, data_long_CHS$mcc_Hannum.DBS, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_Hannum.Saliva, data_long_CHS$mcc_Hannum.DBS, paired = TRUE)
 # Saliva vs BC #
-t.test(data_long_CHS$mcc_Hannum.Saliva, data_long_CHS$`mcc_Hannum.Buffy Coat`, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_Hannum.Saliva, data_long_CHS$`mcc_Hannum.Buffy Coat`, paired = TRUE)
 # DBS vs BC #
-t.test(data_long_CHS$mcc_Hannum.DBS, data_long_CHS$`mcc_Hannum.Buffy Coat`, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_Hannum.DBS, data_long_CHS$`mcc_Hannum.Buffy Coat`, paired = TRUE)
 
 ## PhenoAge ##
 # Buccal vs Saliva #
-t.test(data_long_CHS$mcc_PhenoAge.Buccal, data_long_CHS$mcc_PhenoAge.Saliva, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_PhenoAge.Buccal, data_long_CHS$mcc_PhenoAge.Saliva, paired = TRUE)
 # Buccal vs DBS #
-t.test(data_long_CHS$mcc_PhenoAge.Buccal, data_long_CHS$mcc_PhenoAge.DBS, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_PhenoAge.Buccal, data_long_CHS$mcc_PhenoAge.DBS, paired = TRUE)
 # Buccal vs BC #
-t.test(data_long_CHS$mcc_PhenoAge.Buccal, data_long_CHS$`mcc_PhenoAge.Buffy Coat`, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_PhenoAge.Buccal, data_long_CHS$`mcc_PhenoAge.Buffy Coat`, paired = TRUE)
 # Saliva vs DBS #
-t.test(data_long_CHS$mcc_PhenoAge.Saliva, data_long_CHS$mcc_PhenoAge.DBS, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_PhenoAge.Saliva, data_long_CHS$mcc_PhenoAge.DBS, paired = TRUE)
 # Saliva vs BC #
-t.test(data_long_CHS$mcc_PhenoAge.Saliva, data_long_CHS$`mcc_PhenoAge.Buffy Coat`, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_PhenoAge.Saliva, data_long_CHS$`mcc_PhenoAge.Buffy Coat`, paired = TRUE)
 # DBS vs BC #
-t.test(data_long_CHS$mcc_PhenoAge.DBS, data_long_CHS$`mcc_PhenoAge.Buffy Coat`, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_PhenoAge.DBS, data_long_CHS$`mcc_PhenoAge.Buffy Coat`, paired = TRUE)
 
 ## GrimAge2 ##
 # Buccal vs Saliva #
-t.test(data_long_CHS$mcc_GrimAge2.Buccal, data_long_CHS$mcc_GrimAge2.Saliva, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_GrimAge2.Buccal, data_long_CHS$mcc_GrimAge2.Saliva, paired = TRUE)
 # Buccal vs DBS #
-t.test(data_long_CHS$mcc_GrimAge2.Buccal, data_long_CHS$mcc_GrimAge2.DBS, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_GrimAge2.Buccal, data_long_CHS$mcc_GrimAge2.DBS, paired = TRUE)
 # Buccal vs BC #
-t.test(data_long_CHS$mcc_GrimAge2.Buccal, data_long_CHS$`mcc_GrimAge2.Buffy Coat`, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_GrimAge2.Buccal, data_long_CHS$`mcc_GrimAge2.Buffy Coat`, paired = TRUE)
 # Saliva vs DBS #
-t.test(data_long_CHS$mcc_GrimAge2.Saliva, data_long_CHS$mcc_GrimAge2.DBS, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_GrimAge2.Saliva, data_long_CHS$mcc_GrimAge2.DBS, paired = TRUE)
 # Saliva vs BC #
-t.test(data_long_CHS$mcc_GrimAge2.Saliva, data_long_CHS$`mcc_GrimAge2.Buffy Coat`, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_GrimAge2.Saliva, data_long_CHS$`mcc_GrimAge2.Buffy Coat`, paired = TRUE)
 # DBS vs BC #
-t.test(data_long_CHS$mcc_GrimAge2.DBS, data_long_CHS$`mcc_GrimAge2.Buffy Coat`, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_GrimAge2.DBS, data_long_CHS$`mcc_GrimAge2.Buffy Coat`, paired = TRUE)
 
 ## PACE ##
 # Buccal vs Saliva #
-t.test(data_long_CHS$mcc_DunedinPACE.Buccal, data_long_CHS$mcc_DunedinPACE.Saliva, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_DunedinPACE.Buccal, data_long_CHS$mcc_DunedinPACE.Saliva, paired = TRUE)
 # Buccal vs DBS #
-t.test(data_long_CHS$mcc_DunedinPACE.Buccal, data_long_CHS$mcc_DunedinPACE.DBS, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_DunedinPACE.Buccal, data_long_CHS$mcc_DunedinPACE.DBS, paired = TRUE)
 # Buccal vs BC #
-t.test(data_long_CHS$mcc_DunedinPACE.Buccal, data_long_CHS$`mcc_DunedinPACE.Buffy Coat`, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_DunedinPACE.Buccal, data_long_CHS$`mcc_DunedinPACE.Buffy Coat`, paired = TRUE)
 # Saliva vs DBS #
-t.test(data_long_CHS$mcc_DunedinPACE.Saliva, data_long_CHS$mcc_DunedinPACE.DBS, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_DunedinPACE.Saliva, data_long_CHS$mcc_DunedinPACE.DBS, paired = TRUE)
 # Saliva vs BC #
-t.test(data_long_CHS$mcc_DunedinPACE.Saliva, data_long_CHS$`mcc_DunedinPACE.Buffy Coat`, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_DunedinPACE.Saliva, data_long_CHS$`mcc_DunedinPACE.Buffy Coat`, paired = TRUE)
 # DBS vs BC #
-t.test(data_long_CHS$mcc_DunedinPACE.DBS, data_long_CHS$`mcc_DunedinPACE.Buffy Coat`, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_DunedinPACE.DBS, data_long_CHS$`mcc_DunedinPACE.Buffy Coat`, paired = TRUE)
 
 ## Skin and Blood ##
 # Buccal vs Saliva #
-t.test(data_long_CHS$mcc_Horvath2.Buccal, data_long_CHS$mcc_Horvath2.Saliva, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_Horvath2.Buccal, data_long_CHS$mcc_Horvath2.Saliva, paired = TRUE)
 # Buccal vs DBS #
-t.test(data_long_CHS$mcc_Horvath2.Buccal, data_long_CHS$mcc_Horvath2.DBS, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_Horvath2.Buccal, data_long_CHS$mcc_Horvath2.DBS, paired = TRUE)
 # Buccal vs BC #
-t.test(data_long_CHS$mcc_Horvath2.Buccal, data_long_CHS$`mcc_Horvath2.Buffy Coat`, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_Horvath2.Buccal, data_long_CHS$`mcc_Horvath2.Buffy Coat`, paired = TRUE)
 # Saliva vs DBS #
-t.test(data_long_CHS$mcc_Horvath2.Saliva, data_long_CHS$mcc_Horvath2.DBS, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_Horvath2.Saliva, data_long_CHS$mcc_Horvath2.DBS, paired = TRUE)
 # Saliva vs BC #
-t.test(data_long_CHS$mcc_Horvath2.Saliva, data_long_CHS$`mcc_Horvath2.Buffy Coat`, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_Horvath2.Saliva, data_long_CHS$`mcc_Horvath2.Buffy Coat`, paired = TRUE)
 # DBS vs BC #
-t.test(data_long_CHS$mcc_Horvath2.DBS, data_long_CHS$`mcc_Horvath2.Buffy Coat`, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_Horvath2.DBS, data_long_CHS$`mcc_Horvath2.Buffy Coat`, paired = TRUE)
 
 ## PedBE ##
 # Buccal vs Saliva #
-t.test(data_long_CHS$mcc_PedBE.Buccal, data_long_CHS_CHS$mcc_PedBE.Saliva, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_PedBE.Buccal, data_long_CHS_CHS$mcc_PedBE.Saliva, paired = TRUE)
 # Buccal vs DBS #
-t.test(data_long_CHS$mcc_PedBE.Buccal, data_long_CHS_CHS$mcc_PedBE.DBS, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_PedBE.Buccal, data_long_CHS_CHS$mcc_PedBE.DBS, paired = TRUE)
 # Buccal vs BC #
-t.test(data_long_CHS$mcc_PedBE.Buccal, data_long_CHS_CHS$`mcc_PedBE.Buffy Coat`, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_PedBE.Buccal, data_long_CHS_CHS$`mcc_PedBE.Buffy Coat`, paired = TRUE)
 # Saliva vs DBS #
-t.test(data_long_CHS$mcc_PedBE.Saliva, data_long_CHS_CHS$mcc_PedBE.DBS, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_PedBE.Saliva, data_long_CHS_CHS$mcc_PedBE.DBS, paired = TRUE)
 # Saliva vs BC #
-t.test(data_long_CHS$mcc_PedBE.Saliva, data_long_CHS_CHS$`mcc_PedBE.Buffy Coat`, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_PedBE.Saliva, data_long_CHS_CHS$`mcc_PedBE.Buffy Coat`, paired = TRUE)
 # DBS vs BC #
-t.test(data_long_CHS$mcc_PedBE.DBS, data_long_CHS_CHS$`mcc_PedBE.Buffy Coat`, paired = TRUE)$p.value
+t.test(data_long_CHS$mcc_PedBE.DBS, data_long_CHS_CHS$`mcc_PedBE.Buffy Coat`, paired = TRUE)
 
 ###############################################################
 ### Statistical Analyses - Tissue EpiClock Correlations Controlling for Batch and Cell Compositions ### ----
@@ -4010,638 +3452,5 @@ corrplot(PACE_Tissue_cor$r, method="ellipse", col=col(200),
          # Change font size of text labels
          tl.cex = 1.1)
          #title = "DunedinPACE (Batch and Cell Composition Res.)") 
-
-## DNAmTL ##
-# DNAmTL #
-DNAmTL_Tissue_cor <- corr.test(data_long[,c("DNAmTL_BatchCell_Res.Buccal","DNAmTL_BatchCell_Res.Saliva","DNAmTL_BatchCell_Res.DBS",
-                                            "DNAmTL_BatchCell_Res.Buffy Coat","DNAmTL_BatchCell_Res.PBMC")])
-DNAmTL_Tissue_cor$r[4,5] <- 0
-DNAmTL_Tissue_cor$r[5,4] <- 0
-DNAmTL_Tissue_cor$p[4,5] <- 1
-DNAmTL_Tissue_cor$p[5,4] <- 1
-rownames(DNAmTL_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-colnames(DNAmTL_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-rownames(DNAmTL_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-colnames(DNAmTL_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-# Correlation plot #
-corrplot(DNAmTL_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         # Combine with significance
-         #p.mat = Horvath_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE)
-
-# DNAmTL age adjusted #
-DNAmTL_Adj_Tissue_cor <- corr.test(data_long[,c("DNAmTLAdjAge_BatchCell_Res.Buccal","DNAmTLAdjAge_BatchCell_Res.Saliva","DNAmTLAdjAge_BatchCell_Res.DBS",
-                                                "DNAmTLAdjAge_BatchCell_Res.Buffy Coat","DNAmTLAdjAge_BatchCell_Res.PBMC")])
-DNAmTL_Adj_Tissue_cor$r[4,5] <- 0
-DNAmTL_Adj_Tissue_cor$r[5,4] <- 0
-DNAmTL_Adj_Tissue_cor$p[4,5] <- 1
-DNAmTL_Adj_Tissue_cor$p[5,4] <- 1
-rownames(DNAmTL_Adj_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-colnames(DNAmTL_Adj_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-rownames(DNAmTL_Adj_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-colnames(DNAmTL_Adj_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-# Correlation plot #
-corrplot(DNAmTL_Adj_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         # Combine with significance
-         #p.mat = Horvath_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE)
-
-## PC Horvath ##
-# Horvath age acceleration #
-HorvathPC_Age_Acc_Tissue_cor <- corr.test(data_long[,c("PCHorvath1Resid.Buccal","PCHorvath1Resid.Saliva","PCHorvath1Resid.DBS",
-                                                       "PCHorvath1Resid.Buffy Coat","PCHorvath1Resid.PBMC")])
-HorvathPC_Age_Acc_Tissue_cor$r[4,5] <- 0
-HorvathPC_Age_Acc_Tissue_cor$r[5,4] <- 0
-HorvathPC_Age_Acc_Tissue_cor$p[4,5] <- 1
-HorvathPC_Age_Acc_Tissue_cor$p[5,4] <- 1
-rownames(HorvathPC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-colnames(HorvathPC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-rownames(HorvathPC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-colnames(HorvathPC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-# Correlation plot #
-corrplot(HorvathPC_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = Horvath_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1) 
-
-## PC Hannum ##
-# Hannum age acceleration #
-HannumPC_Age_Acc_Tissue_cor <- corr.test(data_long[,c("PCHannumResid.Buccal","PCHannumResid.Saliva","PCHannumResid.DBS",
-                                                      "PCHannumResid.Buffy Coat","PCHannumResid.PBMC")])
-HannumPC_Age_Acc_Tissue_cor$r[4,5] <- 0
-HannumPC_Age_Acc_Tissue_cor$r[5,4] <- 0
-HannumPC_Age_Acc_Tissue_cor$p[4,5] <- 1
-HannumPC_Age_Acc_Tissue_cor$p[5,4] <- 1
-rownames(HannumPC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-colnames(HannumPC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-rownames(HannumPC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-colnames(HannumPC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-# Correlation plot #
-corrplot(HannumPC_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = Hannum_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1) 
-
-## PC PhenoAge ##
-# PhenoAge age acceleration #
-PhenoAgePC_Age_Acc_Tissue_cor <- corr.test(data_long[,c("PCPhenoAgeResid.Buccal","PCPhenoAgeResid.Saliva","PCPhenoAgeResid.DBS",
-                                                        "PCPhenoAgeResid.Buffy Coat","PCPhenoAgeResid.PBMC")])
-PhenoAgePC_Age_Acc_Tissue_cor$r[4,5] <- 0
-PhenoAgePC_Age_Acc_Tissue_cor$r[5,4] <- 0
-PhenoAgePC_Age_Acc_Tissue_cor$p[4,5] <- 1
-PhenoAgePC_Age_Acc_Tissue_cor$p[5,4] <- 1
-rownames(PhenoAgePC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-colnames(PhenoAgePC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-rownames(PhenoAgePC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-colnames(PhenoAgePC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-# Correlation plot #
-corrplot(PhenoAgePC_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = PhenoAge_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1) 
-
-## PC GrimAge ##
-# GrimAge age acceleration #
-GrimAgePC_Age_Acc_Tissue_cor <- corr.test(data_long[,c("PCGrimAgeResid.Buccal","PCGrimAgeResid.Saliva","PCGrimAgeResid.DBS",
-                                                       "PCGrimAgeResid.Buffy Coat","PCGrimAgeResid.PBMC")])
-GrimAgePC_Age_Acc_Tissue_cor$r[4,5] <- 0
-GrimAgePC_Age_Acc_Tissue_cor$r[5,4] <- 0
-GrimAgePC_Age_Acc_Tissue_cor$p[4,5] <- 1
-GrimAgePC_Age_Acc_Tissue_cor$p[5,4] <- 1
-rownames(GrimAgePC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-colnames(GrimAgePC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-rownames(GrimAgePC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-colnames(GrimAgePC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-# Correlation plot #
-corrplot(GrimAgePC_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = GrimAge_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1) 
-
-## PC Skin and Blood ##
-# Skin and Blood age acceleration #
-SkinBloodPC_Age_Acc_Tissue_cor <- corr.test(data_long[,c("PCHorvath2Resid.Buccal","PCHorvath2Resid.Saliva","PCHorvath2Resid.DBS",
-                                                         "PCHorvath2Resid.Buffy Coat","PCHorvath2Resid.PBMC")])
-SkinBloodPC_Age_Acc_Tissue_cor$r[4,5] <- 0
-SkinBloodPC_Age_Acc_Tissue_cor$r[5,4] <- 0
-SkinBloodPC_Age_Acc_Tissue_cor$p[4,5] <- 1
-SkinBloodPC_Age_Acc_Tissue_cor$p[5,4] <- 1
-rownames(SkinBloodPC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-colnames(SkinBloodPC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-rownames(SkinBloodPC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-colnames(SkinBloodPC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat","PBMC")
-# Correlation plot #
-corrplot(SkinBloodPC_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = Horvath_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1) 
-
-## Stratified by Cohort ##
-
-## Horvath (Adults Only) ##
-# Horvath age acceleration #
-HorvathTRN_Age_Acc_Tissue_cor <- corr.test(data_long_TRN[,c("mcc_Horvath1_AccMinus.Buccal","mcc_Horvath1_AccMinus.Saliva","mcc_Horvath1_AccMinus.DBS",
-                                                            "mcc_Horvath1_AccMinus.PBMC")])
-rownames(HorvathTRN_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
-colnames(HorvathTRN_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
-rownames(HorvathTRN_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
-colnames(HorvathTRN_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
-# Correlation plot #
-corrplot(HorvathTRN_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = Horvath_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1)
-
-## Horvath (Children Only) ##
-# Horvath age acceleration #
-HorvathCHS_Age_Acc_Tissue_cor <- corr.test(data_long_CHS[,c("mcc_Horvath1_AccMinus.Buccal","mcc_Horvath1_AccMinus.Saliva","mcc_Horvath1_AccMinus.DBS",
-                                                            "mcc_Horvath1_AccMinus.Buffy Coat")])
-rownames(HorvathCHS_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
-colnames(HorvathCHS_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
-rownames(HorvathCHS_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
-colnames(HorvathCHS_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
-# Correlation plot #
-corrplot(HorvathCHS_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = Horvath_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1)
-
-## Hannum (Adults Only) ##
-# Hannum age acceleration #
-HannumTRN_Age_Acc_Tissue_cor <- corr.test(data_long_TRN[,c("mcc_Hannum_AccMinus.Buccal","mcc_Hannum_AccMinus.Saliva","mcc_Hannum_AccMinus.DBS",
-                                                           "mcc_Hannum_AccMinus.PBMC")])
-rownames(HannumTRN_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
-colnames(HannumTRN_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
-rownames(HannumTRN_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
-colnames(HannumTRN_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
-# Correlation plot #
-corrplot(HannumTRN_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = Hannum_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1)
-
-## Hannum (Children Only) ##
-# Hannum age acceleration #
-HannumCHS_Age_Acc_Tissue_cor <- corr.test(data_long_CHS[,c("mcc_Hannum_AccMinus.Buccal","mcc_Hannum_AccMinus.Saliva","mcc_Hannum_AccMinus.DBS",
-                                                           "mcc_Hannum_AccMinus.Buffy Coat")])
-rownames(HannumCHS_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
-colnames(HannumCHS_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
-rownames(HannumCHS_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
-colnames(HannumCHS_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
-# Correlation plot #
-corrplot(HannumCHS_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = Hannum_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1)
-
-## PhenoAge (Adults Only) ##
-# PhenoAge acceleration #
-PhenoAgeTRN_Age_Acc_Tissue_cor <- corr.test(data_long_TRN[,c("mcc_PhenoAge_AccMinus.Buccal","mcc_PhenoAge_AccMinus.Saliva","mcc_PhenoAge_AccMinus.DBS",
-                                                             "mcc_PhenoAge_AccMinus.PBMC")])
-rownames(PhenoAgeTRN_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
-colnames(PhenoAgeTRN_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
-rownames(PhenoAgeTRN_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
-colnames(PhenoAgeTRN_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
-# Correlation plot #
-corrplot(PhenoAgeTRN_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = PhenoAge_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1)
-
-## PhenoAge (Children Only) ##
-# PhenoAge age acceleration #
-PhenoAgeCHS_Age_Acc_Tissue_cor <- corr.test(data_long_CHS[,c("mcc_PhenoAge_AccMinus.Buccal","mcc_PhenoAge_AccMinus.Saliva","mcc_PhenoAge_AccMinus.DBS",
-                                                             "mcc_PhenoAge_AccMinus.Buffy Coat")])
-rownames(PhenoAgeCHS_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
-colnames(PhenoAgeCHS_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
-rownames(PhenoAgeCHS_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
-colnames(PhenoAgeCHS_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
-# Correlation plot #
-corrplot(PhenoAgeCHS_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = PhenoAge_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1)
-
-## GrimAge2 (Adults Only) ##
-# GrimAge2 acceleration #
-GrimAge2TRN_Age_Acc_Tissue_cor <- corr.test(data_long_TRN[,c("mcc_GrimAge2_AccMinus.Buccal","mcc_GrimAge2_AccMinus.Saliva","mcc_GrimAge2_AccMinus.DBS",
-                                                             "mcc_GrimAge2_AccMinus.PBMC")])
-rownames(GrimAge2TRN_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
-colnames(GrimAge2TRN_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
-rownames(GrimAge2TRN_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
-colnames(GrimAge2TRN_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
-# Correlation plot #
-corrplot(GrimAge2TRN_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = GrimAge2_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1)
-
-## GrimAge2 (Children Only) ##
-# GrimAge2 age acceleration #
-GrimAge2CHS_Age_Acc_Tissue_cor <- corr.test(data_long_CHS[,c("mcc_GrimAge2_AccMinus.Buccal","mcc_GrimAge2_AccMinus.Saliva","mcc_GrimAge2_AccMinus.DBS",
-                                                             "mcc_GrimAge2_AccMinus.Buffy Coat")])
-rownames(GrimAge2CHS_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
-colnames(GrimAge2CHS_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
-rownames(GrimAge2CHS_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
-colnames(GrimAge2CHS_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
-# Correlation plot #
-corrplot(GrimAge2CHS_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = GrimAge2_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1)
-
-## PACE (Adults Only) ##
-# PACE acceleration #
-PACETRN_Age_Acc_Tissue_cor <- corr.test(data_long_TRN[,c("mcc_DunedinPACE.Buccal","mcc_DunedinPACE.Saliva","mcc_DunedinPACE.DBS",
-                                                         "mcc_DunedinPACE.PBMC")])
-rownames(PACETRN_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
-colnames(PACETRN_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
-rownames(PACETRN_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
-colnames(PACETRN_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
-# Correlation plot #
-corrplot(PACETRN_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = PACE_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1)
-
-## PACE (Children Only) ##
-# PACE age acceleration #
-PACECHS_Age_Acc_Tissue_cor <- corr.test(data_long_CHS[,c("mcc_DunedinPACE.Buccal","mcc_DunedinPACE.Saliva","mcc_DunedinPACE.DBS",
-                                                         "mcc_DunedinPACE.Buffy Coat")])
-rownames(PACECHS_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
-colnames(PACECHS_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
-rownames(PACECHS_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
-colnames(PACECHS_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
-# Correlation plot #
-corrplot(PACECHS_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = PACE_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1)
-
-## SkinBlood (Adults Only) ##
-# SkinBlood acceleration #
-SkinBloodTRN_Age_Acc_Tissue_cor <- corr.test(data_long_TRN[,c("mcc_Horvath2_AccMinus.Buccal","mcc_Horvath2_AccMinus.Saliva","mcc_Horvath2_AccMinus.DBS",
-                                                              "mcc_Horvath2_AccMinus.PBMC")])
-rownames(SkinBloodTRN_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
-colnames(SkinBloodTRN_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
-rownames(SkinBloodTRN_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
-colnames(SkinBloodTRN_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
-# Correlation plot #
-corrplot(SkinBloodTRN_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = SkinBlood_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1)
-
-## SkinBlood (Children Only) ##
-# SkinBlood age acceleration #
-SkinBloodCHS_Age_Acc_Tissue_cor <- corr.test(data_long_CHS[,c("mcc_Horvath2_AccMinus.Buccal","mcc_Horvath2_AccMinus.Saliva","mcc_Horvath2_AccMinus.DBS",
-                                                              "mcc_Horvath2_AccMinus.Buffy Coat")])
-rownames(SkinBloodCHS_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
-colnames(SkinBloodCHS_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
-rownames(SkinBloodCHS_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
-colnames(SkinBloodCHS_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
-# Correlation plot #
-corrplot(SkinBloodCHS_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = SkinBlood_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1)
-
-## PC Horvath (Adults Only) ##
-# PC Horvath age acceleration #
-HorvathTRN_PC_Age_Acc_Tissue_cor <- corr.test(data_long_TRN[,c("PCHorvath1Resid.Buccal","PCHorvath1Resid.Saliva","PCHorvath1Resid.DBS",
-                                                               "PCHorvath1Resid.PBMC")])
-rownames(HorvathTRN_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
-colnames(HorvathTRN_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
-rownames(HorvathTRN_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
-colnames(HorvathTRN_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
-# Correlation plot #
-corrplot(HorvathTRN_PC_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = Horvath_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1)
-
-## PC Horvath (Children Only) ##
-# PC Horvath age acceleration #
-HorvathCHS_PC_Age_Acc_Tissue_cor <- corr.test(data_long_CHS[,c("PCHorvath1Resid.Buccal","PCHorvath1Resid.Saliva","PCHorvath1Resid.DBS",
-                                                               "PCHorvath1Resid.Buffy Coat")])
-rownames(HorvathCHS_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
-colnames(HorvathCHS_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
-rownames(HorvathCHS_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
-colnames(HorvathCHS_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
-# Correlation plot #
-corrplot(HorvathCHS_PC_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = Horvath_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1)
-
-## PC Hannum (Adults Only) ##
-# PC Hannum age acceleration #
-HannumTRN_PC_Age_Acc_Tissue_cor <- corr.test(data_long_TRN[,c("PCHannumResid.Buccal","PCHannumResid.Saliva","PCHannumResid.DBS",
-                                                              "PCHannumResid.PBMC")])
-rownames(HannumTRN_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
-colnames(HannumTRN_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
-rownames(HannumTRN_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
-colnames(HannumTRN_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
-# Correlation plot #
-corrplot(HannumTRN_PC_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = Hannum_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1)
-
-## PC Hannum (Children Only) ##
-# PC Hannum age acceleration #
-HannumCHS_PC_Age_Acc_Tissue_cor <- corr.test(data_long_CHS[,c("PCHannumResid.Buccal","PCHannumResid.Saliva","PCHannumResid.DBS",
-                                                              "PCHannumResid.Buffy Coat")])
-rownames(HannumCHS_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
-colnames(HannumCHS_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
-rownames(HannumCHS_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
-colnames(HannumCHS_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
-# Correlation plot #
-corrplot(HannumCHS_PC_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = Hannum_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1)
-
-## PC PhenoAge (Adults Only) ##
-# PC PhenoAge age acceleration #
-PhenoAgeTRN_PC_Age_Acc_Tissue_cor <- corr.test(data_long_TRN[,c("PCPhenoAgeResid.Buccal","PCPhenoAgeResid.Saliva","PCPhenoAgeResid.DBS",
-                                                                "PCPhenoAgeResid.PBMC")])
-rownames(PhenoAgeTRN_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
-colnames(PhenoAgeTRN_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
-rownames(PhenoAgeTRN_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
-colnames(PhenoAgeTRN_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
-# Correlation plot #
-corrplot(PhenoAgeTRN_PC_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = PhenoAge_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1)
-
-## PC PhenoAge (Children Only) ##
-# PC PhenoAge age acceleration #
-PhenoAgeCHS_PC_Age_Acc_Tissue_cor <- corr.test(data_long_CHS[,c("PCPhenoAgeResid.Buccal","PCPhenoAgeResid.Saliva","PCPhenoAgeResid.DBS",
-                                                                "PCPhenoAgeResid.Buffy Coat")])
-rownames(PhenoAgeCHS_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
-colnames(PhenoAgeCHS_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
-rownames(PhenoAgeCHS_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
-colnames(PhenoAgeCHS_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
-# Correlation plot #
-corrplot(PhenoAgeCHS_PC_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = PhenoAge_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1)
-
-## PC GrimAge (Adults Only) ##
-# PC GrimAge age acceleration #
-GrimAgeTRN_PC_Age_Acc_Tissue_cor <- corr.test(data_long_TRN[,c("PCGrimAgeResid.Buccal","PCGrimAgeResid.Saliva","PCGrimAgeResid.DBS",
-                                                               "PCGrimAgeResid.PBMC")])
-rownames(GrimAgeTRN_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
-colnames(GrimAgeTRN_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
-rownames(GrimAgeTRN_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
-colnames(GrimAgeTRN_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
-# Correlation plot #
-corrplot(GrimAgeTRN_PC_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = GrimAge_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1)
-
-## PC GrimAge (Children Only) ##
-# PC GrimAge age acceleration #
-GrimAgeCHS_PC_Age_Acc_Tissue_cor <- corr.test(data_long_CHS[,c("PCGrimAgeResid.Buccal","PCGrimAgeResid.Saliva","PCGrimAgeResid.DBS",
-                                                               "PCGrimAgeResid.Buffy Coat")])
-rownames(GrimAgeCHS_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
-colnames(GrimAgeCHS_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
-rownames(GrimAgeCHS_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
-colnames(GrimAgeCHS_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
-# Correlation plot #
-corrplot(GrimAgeCHS_PC_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = GrimAge_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1)
-
-## PC Skin and Blood (Adults Only) ##
-# PC Skin and Blood age acceleration #
-SkinBloodTRN_PC_Age_Acc_Tissue_cor <- corr.test(data_long_TRN[,c("PCHorvath2Resid.Buccal","PCHorvath2Resid.Saliva","PCHorvath2Resid.DBS",
-                                                                 "PCHorvath2Resid.PBMC")])
-rownames(SkinBloodTRN_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
-colnames(SkinBloodTRN_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","PBMC")
-rownames(SkinBloodTRN_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
-colnames(SkinBloodTRN_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","PBMC")
-# Correlation plot #
-corrplot(SkinBloodTRN_PC_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = Horvath_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1)
-
-## PC Skin and Blood (Children Only) ##
-# PC Skin and Blood age acceleration #
-SkinBloodCHS_PC_Age_Acc_Tissue_cor <- corr.test(data_long_CHS[,c("PCHorvath2Resid.Buccal","PCHorvath2Resid.Saliva","PCHorvath2Resid.DBS",
-                                                                 "PCHorvath2Resid.Buffy Coat")])
-rownames(SkinBloodCHS_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
-colnames(SkinBloodCHS_PC_Age_Acc_Tissue_cor$r) <- c("Buccal","Saliva","DBS","Buffy Coat")
-rownames(SkinBloodCHS_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
-colnames(SkinBloodCHS_PC_Age_Acc_Tissue_cor$p) <- c("Buccal","Saliva","DBS","Buffy Coat")
-# Correlation plot #
-corrplot(SkinBloodCHS_PC_Age_Acc_Tissue_cor$r, method="ellipse", col=col(200),  
-         type="lower", order="original", 
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", tl.srt=0, #Text label color and rotation
-         cl.pos = "n",
-         # Combine with significance
-         #p.mat = Horvath_Age_Tissue_cor$p, insig = "pch", sig.level = 0.01, pch = "*", pch.cex = 0.5,
-         # hide correlation coefficient on the principal diagonal
-         diag=FALSE,
-         # Change font size of text labels
-         tl.cex = 1.1)
-
 
 ###############################################################
